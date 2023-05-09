@@ -1,19 +1,19 @@
-import { Sequelize } from "sequelize";
-import { DATABASE_URL } from "./config.js";
+import { Sequelize } from 'sequelize';
+import { DATABASE_URL } from './config.js';
 
 const sequelize = new Sequelize(DATABASE_URL, {
-  dialect: "postgres",
+  dialect: 'postgres',
   pool: {
-    acquire: 1000000,
-  },
+    acquire: 1000000
+  }
 });
 
 const connectToDatabase = async () => {
   try {
     await sequelize.authenticate();
-    console.log("database connected");
+    console.log('database connected');
   } catch (err) {
-    console.log("connecting database failed");
+    console.log('connecting database failed');
     console.log(err);
     process.exit(1);
   }
