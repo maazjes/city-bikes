@@ -25,8 +25,6 @@ const App = (): JSX.Element => {
     }
   }, []);
 
-  console.log(token);
-
   return (
     <QueryClientProvider client={new QueryClient()}>
       <div className="App">
