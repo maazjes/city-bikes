@@ -5,6 +5,8 @@ import http from 'http';
 import { PORT } from './util/config.js';
 import { connectToDatabase } from './util/db.js';
 import login from './controllers/login.js';
+import users from './controllers/users.js';
+import { errorHandler } from './util/middleware.js';
 
 const app = express();
 app.use(cors());
@@ -14,6 +16,8 @@ app.use(express.urlencoded({ extended: true }));
 const server = http.createServer(app);
 
 app.use('/api/login', login);
+app.use('/api/users', users);
+app.use(errorHandler);
 
 const start = async () => {
   await connectToDatabase();

@@ -19,12 +19,7 @@
       "unused-imports/no-unused-imports": "error",
       "max-len": ["error", {"code": 100}],
       "no-empty":"off",
-      "import/extensions": [
-        "error",
-        {
-            "js": "ignorePackages"
-        }
-    ]
+      "import/extensions": ["error", "always"]
     },
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
