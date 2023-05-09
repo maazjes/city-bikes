@@ -1,0 +1,19 @@
+{
+  "name": "back",
+  "version": "1.0.0",
+  "description": "Backend for the city-bikes frontend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maazjes/city-bikes.git"
+  },
+  "author": "Marius Hasan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/maazjes/city-bikes/issues"
+  },
+  "homepage": "https://github.com/maazjes/city-bikes#readme"
+}
