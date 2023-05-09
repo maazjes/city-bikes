@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/maazjes/city-bikes/issues"
   },
-  "homepage": "https://github.com/maazjes/city-bikes#readme"
+  "homepage": "https://github.com/maazjes/city-bikes#readme",
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  }
 }

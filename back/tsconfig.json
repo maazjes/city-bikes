@@ -1,12 +1,7 @@
 {
-  "compilerOptions": {
-    "target": "ES2017",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "strict": true,
+    "compilerOptions": {
+        "target": "ESNext",
+      "strict": true,
       "noImplicitAny": true,
       "noImplicitReturns": true,
       "strictNullChecks": true,
@@ -26,10 +21,9 @@
       "experimentalDecorators": true,
       "emitDecoratorMetadata": true,
       "resolveJsonModule": true,
-      "skipLibCheck": true,
-      "jsx": "react-jsx",
-      "baseUrl": "./"
-  },
-  "include": ["./src"],
+      "baseUrl": "./",
+    },
+    "include": ["./"],
     "exclude": ["node_modules"]
-}
+  }
+  
