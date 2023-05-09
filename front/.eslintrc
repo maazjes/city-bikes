@@ -1,0 +1,42 @@
+{
+    "plugins": ["react", "import", "unused-imports", "prettier"],
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    },
+    "extends": ["airbnb", "airbnb-typescript", "prettier"],
+    "rules": {
+      "prettier/prettier": "error",
+      "react/prop-types": "off",
+      "indent": "off",
+      "@typescript-eslint/react/react-in-jsx": "off",
+      "@typescript-eslint/no-redeclare": 0,
+      "@typescript-eslint/no-explicit-any": 1,
+      "@typescript-eslint/no-unsafe-argument": "error",
+      "@typescript-eslint/no-unsafe-assignment": "error",
+      "@typescript-eslint/no-unsafe-call": "error",
+      "@typescript-eslint/no-unsafe-member-access": "error",
+      "@typescript-eslint/no-unsafe-return": "error",
+      "@typescript-eslint/explicit-function-return-type": "error",
+      "@typescript-eslint/restrict-plus-operands": "error",
+      "@typescript-eslint/restrict-template-expressions": "error",
+      "react/react-in-jsx-scope": "off",
+      "react/function-component-definition": "off",
+      "react/jsx-props-no-spreading": "off",
+      "import/prefer-default-export": "off",
+      "no-nested-ternary": "off",
+      "global-require":"off",
+      "unused-imports/no-unused-imports": "error",
+      "max-len": ["error", {"code": 100}],
+      "no-empty":"off"
+    },
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "project": "./tsconfig.json",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    }
+  }
+  
