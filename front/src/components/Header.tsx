@@ -33,6 +33,9 @@ const Header = ({ loggedIn }: { loggedIn: boolean }): JSX.Element => {
         </>
       ) : (
         <>
+          <Link href="/upload" sx={{ minWidth: 100 }}>
+            Upload
+          </Link>
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
           <Link onClick={onLogout} component="button" sx={{ minWidth: 100 }}>
             Logout
