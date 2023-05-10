@@ -1,4 +1,5 @@
 import api from 'src/util/api';
+import { Station } from 'src/types';
 
 const createStationsFromCSV = (file: File): Promise<string[]> => {
   const formData = new FormData();
@@ -6,4 +7,6 @@ const createStationsFromCSV = (file: File): Promise<string[]> => {
   return api.postForm<string[]>('stations', formData);
 };
 
-export { createStationsFromCSV };
+const getStations = (): Promise<Station[]> => api.get('stations');
+
+export { createStationsFromCSV, getStations };
