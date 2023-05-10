@@ -2,13 +2,17 @@ import { Error as TypedError } from '../types';
 
 const request = async <TResponse>(url: string, config?: RequestInit): Promise<TResponse> => {
   const response = await fetch(url, config);
-  const json = (await response.json()) as TResponse | Partial<TypedError>;
+  try {
+    const json = (await response.json()) as TResponse | Partial<TypedError>;
 
-  if (response.ok) {
-    return json as TResponse;
+    if (response.ok) {
+      return json as TResponse;
+    }
+
+    throw new Error((json as Partial<TypedError>).error || 'internal server error');
+  } catch {
+    throw new Error('internal server error');
   }
-
-  throw new Error((json as Partial<TypedError>).error || 'internal server error');
 };
 
 const api = {
