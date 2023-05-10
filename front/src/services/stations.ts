@@ -1,5 +1,5 @@
 import api from 'src/util/api';
-import { Station } from 'src/types';
+import { PaginatedStations, PaginationQuery, Station } from 'src/types';
 
 const createStationsFromCSV = (file: File): Promise<string[]> => {
   const formData = new FormData();
@@ -9,4 +9,7 @@ const createStationsFromCSV = (file: File): Promise<string[]> => {
 
 const getStations = (): Promise<Station[]> => api.get('stations');
 
-export { createStationsFromCSV, getStations };
+const getPaginatedStations = (query: PaginationQuery): Promise<PaginatedStations> =>
+  api.get('stations', query);
+
+export { createStationsFromCSV, getStations, getPaginatedStations };

@@ -26,3 +26,8 @@ export type NewStationArray = [
   number,
   number
 ];
+
+export interface PaginationQuery {
+  limit: number;
+  offset: number;
+}

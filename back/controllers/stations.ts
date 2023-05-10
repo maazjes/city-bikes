@@ -3,7 +3,7 @@ import multer from 'multer';
 import fs from 'fs';
 import papa from 'papaparse';
 import { InferAttributes } from 'sequelize';
-import { NewStationArray } from '../types.js';
+import { NewStationArray, PaginationQuery } from '../types.js';
 import ApiError from '../classes/ApiError.js';
 import { Station } from '../models/index.js';
 import { isString } from '../util/helpers.js';
@@ -11,10 +11,21 @@ import { isString } from '../util/helpers.js';
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
-router.get<{}, Station[]>('/', async (_req, res) => {
-  const stations = await Station.findAll();
-  res.status(200).send(stations);
-});
+router.get<{}, Station[] | { rows: Station[]; count: number }, {}, PaginationQuery>(
+  '/',
+  async (req, res) => {
+    if (req.query.limit && req.query.offset) {
+      const paginated = await Station.findAndCountAll({
+        limit: req.query.limit,
+        offset: req.query.offset
+      });
+      res.status(200).send(paginated);
+    } else {
+      const stations = await Station.findAll();
+      res.status(200).send(stations);
+    }
+  }
+);
 
 router.post<{}, string[], Station[]>('/', upload.single('file'), async (req, res) => {
   if (!req.file) {
