@@ -1,6 +1,6 @@
 import express from 'express';
 import { NewUser } from '../types.js';
-import { ApiError } from '../classes/ApiError.js';
+import ApiError from '../classes/ApiError.js';
 import User from '../models/user.js';
 import { hashPassword } from '../util/helpers.js';
 

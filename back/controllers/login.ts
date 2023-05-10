@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import { NewUser, Token } from '../types.js';
 import User from '../models/user.js';
 import { SECRET } from '../util/config.js';
-import { ApiError } from '../classes/ApiError.js';
+import ApiError from '../classes/ApiError.js';
 
 const router = express.Router();
 
