@@ -16,6 +16,10 @@ class Station extends Model<InferAttributes<Station>, InferCreationAttributes<St
 
   declare address: string;
 
+  declare capacity: number;
+
+  declare operator: string;
+
   declare x: number;
 
   declare y: number;
@@ -37,6 +41,14 @@ Station.init(
       allowNull: false
     },
     address: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    capacity: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    operator: {
       type: DataTypes.STRING,
       allowNull: false
     },

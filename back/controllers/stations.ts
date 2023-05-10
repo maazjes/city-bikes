@@ -57,6 +57,8 @@ router.post<{}, string[], Station[]>('/', upload.single('file'), async (req, res
       const name = data[2];
       const address = data[5];
       const city = data[7];
+      const operator = data[9];
+      const capacity = data[10];
       const x = Number(data[11]);
       const y = Number(data[12]);
 
@@ -66,6 +68,8 @@ router.post<{}, string[], Station[]>('/', upload.single('file'), async (req, res
           isString(name) &&
           isString(address) &&
           isString(city) &&
+          isString(operator) &&
+          !Number.isNaN(capacity) &&
           !Number.isNaN(x) &&
           !Number.isNaN(y)
         )
@@ -79,6 +83,8 @@ router.post<{}, string[], Station[]>('/', upload.single('file'), async (req, res
         name,
         address,
         city,
+        operator,
+        capacity,
         x,
         y
       });
