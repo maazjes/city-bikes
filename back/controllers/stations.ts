@@ -11,6 +11,11 @@ import { isString } from '../util/helpers.js';
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
+router.get<{}, Station[]>('/', async (_req, res) => {
+  const stations = await Station.findAll();
+  res.status(200).send(stations);
+});
+
 router.post<{}, string[], Station[]>('/', upload.single('file'), async (req, res) => {
   if (!req.file) {
     throw new ApiError('File missing from request', { status: 400 });
