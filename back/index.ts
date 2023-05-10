@@ -6,6 +6,7 @@ import { PORT } from './util/config.js';
 import { connectToDatabase } from './util/db.js';
 import login from './controllers/login.js';
 import users from './controllers/users.js';
+import stations from './controllers/stations.js';
 import { errorHandler } from './util/middleware.js';
 
 const app = express();
@@ -17,6 +18,8 @@ const server = http.createServer(app);
 
 app.use('/api/login', login);
 app.use('/api/users', users);
+app.use('/api/stations', stations);
+
 app.use(errorHandler);
 
 const start = async () => {
