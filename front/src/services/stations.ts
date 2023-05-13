@@ -7,9 +7,10 @@ const createStationsFromCSV = (file: File): Promise<string[]> => {
   return api.postForm<string[]>('stations', formData);
 };
 
-const getStations = (query?: StationsQuery): Promise<Station[]> => api.get('stations', query);
+const getStations = (query?: StationsQuery): Promise<Station[]> =>
+  api.get<Station[]>('stations', query);
 
 const getPaginatedStations = (query: PaginatedStationsQuery): Promise<PaginatedStations> =>
-  api.get('stations', query);
+  api.get<PaginatedStations>('stations', query);
 
 export { createStationsFromCSV, getStations, getPaginatedStations };
