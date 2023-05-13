@@ -1,4 +1,5 @@
-import station from 'models/station.js';
+import Journey from 'models/journey.js';
+import Station from 'models/station.js';
 import { InferAttributes } from 'sequelize';
 
 export interface Error {
@@ -57,7 +58,7 @@ export interface FilterQuery {
 }
 
 export interface StationFilterQuery extends FilterQuery {
-  filterBy: keyof InferAttributes<station>;
+  filterBy: keyof InferAttributes<Station>;
 }
 
 export interface SortQuery {
@@ -66,7 +67,18 @@ export interface SortQuery {
 }
 
 export interface StationSortQuery extends SortQuery {
-  sortBy: keyof InferAttributes<station>;
+  sortBy: keyof InferAttributes<Station>;
 }
 
 export type StationsQuery = Partial<PaginationQuery & StationFilterQuery & SortQuery>;
+
+export interface JourneyFilterQuery extends FilterQuery {
+  filterBy: keyof InferAttributes<Journey>;
+}
+
+export type JourneysQuery = PaginationQuery & Partial<JourneyFilterQuery & SortQuery>;
+
+export interface SingleStation extends InferAttributes<Station> {
+  journeysFrom: number;
+  journeysTo: number;
+}
