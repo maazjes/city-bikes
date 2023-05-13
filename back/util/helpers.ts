@@ -1,4 +1,6 @@
 import bcrypt from 'bcrypt';
+import { Operator } from 'types';
+import { Op, WhereOptions } from 'sequelize';
 
 const hashPassword = async (password: string) => {
   const salt = await bcrypt.genSalt();
@@ -6,6 +8,57 @@ const hashPassword = async (password: string) => {
   return hashed;
 };
 
-const isString = (x: unknown) => typeof x === 'string' || x instanceof String;
+const isString = (x: unknown): x is string => typeof x === 'string' || x instanceof String;
 
-export { hashPassword, isString };
+const createWhere = (
+  field: string,
+  value: string | number,
+  operator: Operator
+): WhereOptions | undefined => {
+  const sequelizeOperator =
+    operator === '!='
+      ? Op.ne
+      : operator === '<'
+      ? Op.lt
+      : operator === '<='
+      ? Op.lte
+      : operator === '='
+      ? Op.eq
+      : operator === '>'
+      ? Op.gt
+      : operator === '>='
+      ? Op.gte
+      : operator === 'contains'
+      ? Op.iLike
+      : operator === 'endsWith'
+      ? Op.iLike
+      : operator === 'equals'
+      ? Op.eq
+      : operator === 'isAnyOf'
+      ? Op.in
+      : operator === 'startsWith'
+      ? Op.iLike
+      : undefined;
+
+  if (!sequelizeOperator) {
+    return undefined;
+  }
+
+  let finalValue: string | number | string[] | number[] = value;
+  if (operator === 'startsWith') {
+    finalValue = `${value}%`;
+  }
+  if (operator === 'endsWith') {
+    finalValue = `%${value}`;
+  }
+  if (operator === 'contains') {
+    finalValue = `%${value}%`;
+  }
+  if (operator === 'isAnyOf' && isString(value)) {
+    finalValue = value.split(',');
+  }
+
+  return { [field]: { [sequelizeOperator]: finalValue } };
+};
+
+export { hashPassword, isString, createWhere };

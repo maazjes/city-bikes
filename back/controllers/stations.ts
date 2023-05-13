@@ -2,26 +2,41 @@ import express from 'express';
 import multer from 'multer';
 import fs from 'fs';
 import papa from 'papaparse';
-import { InferAttributes } from 'sequelize';
-import { NewStationArray, PaginationQuery } from '../types.js';
+import { InferAttributes, Order, WhereOptions } from 'sequelize';
+import { NewStationArray, StationsQuery } from '../types.js';
 import ApiError from '../classes/ApiError.js';
 import { Station } from '../models/index.js';
-import { isString } from '../util/helpers.js';
+import { isString, createWhere } from '../util/helpers.js';
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
-router.get<{}, Station[] | { rows: Station[]; count: number }, {}, PaginationQuery>(
+router.get<{}, Station[] | { rows: Station[]; count: number }, {}, StationsQuery>(
   '/',
   async (req, res) => {
+    const { operator, value, filterBy, sortBy, sort } = req.query;
+
+    let where: WhereOptions | undefined;
+    let order: Order | undefined;
+
+    if (filterBy && value && operator) {
+      where = createWhere(filterBy, Number.isNaN(Number(value)) ? value : Number(value), operator);
+    }
+
+    if (sortBy && sort) {
+      order = [[sortBy, sort]];
+    }
+
     if (req.query.limit && req.query.offset) {
       const paginated = await Station.findAndCountAll({
         limit: req.query.limit,
-        offset: req.query.offset
+        offset: req.query.offset,
+        where,
+        order
       });
       res.status(200).send(paginated);
     } else {
-      const stations = await Station.findAll();
+      const stations = await Station.findAll({ where, order });
       res.status(200).send(stations);
     }
   }
