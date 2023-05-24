@@ -1,36 +1,29 @@
-import {
-  Model,
-  DataTypes,
-  InferAttributes,
-  InferCreationAttributes,
-  CreationOptional
-} from 'sequelize';
+import { Model, DataTypes, InferAttributes, InferCreationAttributes } from 'sequelize';
 import { sequelize } from '../util/db.js';
 
 class Station extends Model<InferAttributes<Station>, InferCreationAttributes<Station>> {
-  declare id: CreationOptional<number>;
+  declare id: number;
 
   declare name: string;
 
-  declare city: string;
+  declare city?: string;
 
-  declare address: string;
+  declare address?: string;
 
-  declare capacity: number;
+  declare capacity?: number;
 
-  declare operator: string;
+  declare operator?: string;
 
-  declare x: number;
+  declare x?: number;
 
-  declare y: number;
+  declare y?: number;
 }
 
 Station.init(
   {
     id: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
+      primaryKey: true
     },
     name: {
       type: DataTypes.STRING,
@@ -38,27 +31,27 @@ Station.init(
     },
     city: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     address: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     capacity: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     operator: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     x: {
       type: DataTypes.FLOAT,
-      allowNull: false
+      allowNull: true
     },
     y: {
       type: DataTypes.FLOAT,
-      allowNull: false
+      allowNull: true
     }
   },
   {

@@ -3,10 +3,10 @@ import multer from 'multer';
 import fs from 'fs';
 import papa from 'papaparse';
 import { InferAttributes, Order, WhereOptions } from 'sequelize';
-import { NewStationArray, StationsQuery } from '../types.js';
+import { isString, createWhere, isNumber } from '../util/helpers.js';
+import { StationsQuery } from '../types.js';
 import ApiError from '../classes/ApiError.js';
 import { Station } from '../models/index.js';
-import { isString, createWhere } from '../util/helpers.js';
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
@@ -20,6 +20,11 @@ router.get<{}, Station[] | { rows: Station[]; count: number }, {}, StationsQuery
     let order: Order | undefined;
 
     if (filterBy && value && operator) {
+      where = createWhere(
+        filterBy,
+        typeof parseInt(value) === 'number' ? value : Number(value),
+        operator
+      );
       where = createWhere(filterBy, Number.isNaN(Number(value)) ? value : Number(value), operator);
     }
 
@@ -48,12 +53,11 @@ router.post<{}, string[], Station[]>('/', upload.single('file'), async (req, res
   }
   const faultyRows: string[] = [];
   const newStations: InferAttributes<Station>[] = [];
-
   const stream = fs.createReadStream(req.file.path);
 
   let firstLine = true;
 
-  papa.parse<NewStationArray>(stream, {
+  papa.parse<string[]>(stream, {
     delimiter: ',',
     newline: '\n',
     header: false,
@@ -68,25 +72,25 @@ router.post<{}, string[], Station[]>('/', upload.single('file'), async (req, res
         return;
       }
 
-      const id = Number(data[1]);
+      const id = data[1];
       const name = data[2];
       const address = data[5];
       const city = data[7];
       const operator = data[9];
       const capacity = data[10];
-      const x = Number(data[11]);
-      const y = Number(data[12]);
+      const x = data[11];
+      const y = data[12];
 
       if (
         !(
-          !Number.isNaN(id) &&
+          isNumber(id) &&
           isString(name) &&
           isString(address) &&
           isString(city) &&
           isString(operator) &&
-          !Number.isNaN(capacity) &&
-          !Number.isNaN(x) &&
-          !Number.isNaN(y)
+          isNumber(capacity) &&
+          isNumber(x) &&
+          isNumber(y)
         )
       ) {
         faultyRows.push(data.join(','));
@@ -106,13 +110,17 @@ router.post<{}, string[], Station[]>('/', upload.single('file'), async (req, res
 
       if (newStations.length === 20000) {
         parser.pause();
-        await Station.bulkCreate(newStations, { ignoreDuplicates: true });
+        await Station.bulkCreate(newStations, {
+          updateOnDuplicate: ['id', 'address', 'capacity', 'city', 'name', 'operator', 'x', 'y']
+        });
         newStations.length = 0;
         parser.resume();
       }
     },
     complete: async () => {
-      await Station.bulkCreate(newStations, { ignoreDuplicates: true });
+      await Station.bulkCreate(newStations, {
+        updateOnDuplicate: ['id', 'address', 'capacity', 'city', 'name', 'operator', 'x', 'y']
+      });
       res.status(200).send(faultyRows);
     }
   });

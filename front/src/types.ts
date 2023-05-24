@@ -24,12 +24,12 @@ export interface TokenContext {
 export interface Station {
   id: number;
   name: string;
-  city: string;
-  address: string;
-  operator: string;
-  capacity: number;
-  x: number;
-  y: number;
+  city: string | null;
+  address: string | null;
+  operator: string | null;
+  capacity: number | null;
+  latitude: number | null;
+  longitude: number | null;
 }
 
 export interface Journey {
