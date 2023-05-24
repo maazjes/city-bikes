@@ -56,6 +56,8 @@ export interface StationSortQuery extends SortQuery {
 
 export type StationsQuery = Partial<PaginationQuery & StationFilterQuery & SortQuery>;
 
+export type SingleStationQuery = StationsQuery & { after?: Date; before?: Date };
+
 export interface JourneyFilterQuery extends FilterQuery {
   filterBy: keyof InferAttributes<Journey>;
 }
@@ -63,6 +65,10 @@ export interface JourneyFilterQuery extends FilterQuery {
 export type JourneysQuery = PaginationQuery & Partial<JourneyFilterQuery & SortQuery>;
 
 export interface SingleStation extends InferAttributes<Station> {
-  journeysFrom: number;
-  journeysTo: number;
+  topStationsTo: InferAttributes<Station>[];
+  topStationsFrom: InferAttributes<Station>[];
+  averageDistanceTo: number | null;
+  averageDistanceFrom: number | null;
+  totalJourneysTo: number;
+  totalJourneysFrom: number;
 }

@@ -2,11 +2,11 @@ import express from 'express';
 import multer from 'multer';
 import fs from 'fs';
 import papa from 'papaparse';
-import { InferAttributes, Order, WhereOptions } from 'sequelize';
+import { InferAttributes, Order, WhereOptions, col, fn, Op } from 'sequelize';
 import { isString, createWhere, isNumber } from '../util/helpers.js';
-import { StationsQuery } from '../types.js';
+import { SingleStation, SingleStationQuery, StationsQuery } from '../types.js';
 import ApiError from '../classes/ApiError.js';
-import { Station } from '../models/index.js';
+import { Journey, Station } from '../models/index.js';
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
@@ -123,6 +123,64 @@ router.post<{}, string[], Station[]>('/', upload.single('file'), async (req, res
       });
       res.status(200).send(faultyRows);
     }
+  });
+});
+
+router.get<{ id: string }, SingleStation, {}, SingleStationQuery>('/:id', async (req, res) => {
+  const { id } = req.params;
+  const { after, before } = req.query;
+
+  const station = await Station.findOne({ where: { id } });
+  let where;
+
+  if (after && before) {
+    where = {
+      [Op.and]: [{ returnTime: { [Op.lte]: before } }, { returnTime: { [Op.gte]: after } }]
+    };
+  }
+
+  if (!station) {
+    throw new ApiError('Station not found', { status: 400 });
+  }
+
+  const [
+    topStationsTo,
+    topStationsFrom,
+    totalJourneysTo,
+    totalJourneysFrom,
+    totalDistanceTo,
+    totalDistanceFrom
+  ] = await Promise.all([
+    Journey.findAll({
+      where: { ...where, returnStationId: id },
+      attributes: [[fn('count', col('journey.id')), 'total']],
+      include: { model: Station, as: 'departureStation' },
+      group: ['departureStation.id'],
+      order: [['total', 'desc']],
+      limit: 5
+    }),
+    Journey.findAll({
+      where: { ...where, departureStationId: id },
+      attributes: [[fn('count', col('journey.id')), 'total']],
+      include: { model: Station, as: 'returnStation' },
+      group: ['returnStation.id'],
+      order: [['total', 'desc']],
+      limit: 5
+    }),
+    Journey.count({ where: { ...where, returnStationId: id } }),
+    Journey.count({ where: { ...where, departureStationId: id } }),
+    Journey.sum('distance', { where: { ...where, returnStationId: id } }),
+    Journey.sum('distance', { where: { ...where, departureStationId: id } })
+  ]);
+
+  res.json({
+    ...station.dataValues,
+    topStationsTo: topStationsTo.map((journey) => journey.departureStation),
+    topStationsFrom: topStationsFrom.map((journey) => journey.returnStation),
+    averageDistanceTo: totalDistanceTo / totalJourneysTo,
+    averageDistanceFrom: totalDistanceFrom / totalJourneysFrom,
+    totalJourneysTo,
+    totalJourneysFrom
   });
 });
 
