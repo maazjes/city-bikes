@@ -10,6 +10,13 @@ const hashPassword = async (password: string) => {
 
 const isString = (x: unknown): x is string => typeof x === 'string' || x instanceof String;
 
+const isDate = (x: unknown): x is Date => !Number.isNaN(new Date(String(x)).getDate());
+
+const isNumber = (x: unknown): x is number => {
+  if (typeof x !== 'string') return false;
+  return !Number.isNaN(x) && !Number.isNaN(parseFloat(x));
+};
+
 const createWhere = (
   field: string,
   value: string | number,
@@ -61,4 +68,4 @@ const createWhere = (
   return { [field]: { [sequelizeOperator]: finalValue } };
 };
 
-export { hashPassword, isString, createWhere };
+export { hashPassword, isString, createWhere, isNumber, isDate };

@@ -15,22 +15,6 @@ export interface NewUser {
   password: string;
 }
 
-export type NewStationArray = [
-  number,
-  number,
-  string,
-  string,
-  string,
-  string,
-  string,
-  string,
-  string,
-  string,
-  number,
-  number,
-  number
-];
-
 export interface PaginationQuery {
   limit: number;
   offset: number;
