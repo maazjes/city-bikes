@@ -29,7 +29,11 @@
       "global-require":"off",
       "unused-imports/no-unused-imports": "error",
       "max-len": ["error", {"code": 100}],
-      "no-empty":"off"
+      "no-empty":"off",
+      "radix": "off",
+      "react/require-default-props": ["error", {
+        "functions": "defaultArguments"
+      }]
     },
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
