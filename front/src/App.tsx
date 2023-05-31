@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClientProvider } from 'react-query';
 import { useEffect, useMemo, useState } from 'react';
 import { ThemeProvider } from '@mui/material';
 import Login from './views/Login';
@@ -13,6 +13,7 @@ import Stations from './views/Stations';
 import SingleStation from './views/SingleStation';
 import AddStations from './views/AddStations';
 import AddJourneys from './views/AddJourneys';
+import queryClient from './util/queryClient';
 
 const App = (): JSX.Element => {
   const [token, setToken] = useState<string | null>(null);
@@ -32,7 +33,7 @@ const App = (): JSX.Element => {
   }, []);
 
   return (
-    <QueryClientProvider client={new QueryClient()}>
+    <QueryClientProvider client={queryClient}>
       <div className="App">
         <BrowserRouter>
           <TokenContext.Provider value={tokenContext}>
