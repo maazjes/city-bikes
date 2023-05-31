@@ -8,7 +8,7 @@ const validationSchema = yup.object().shape({
   username: yup
     .string()
     .min(3, 'Minimum length of username is 3')
-    .max(30, 'Maximum length of email is 30')
+    .max(20, 'Maximum length of username is 20')
     .required('Username is required'),
   password: yup
     .string()
