@@ -6,7 +6,8 @@
       }
     },
     "env": {
-      "cypress/globals": true
+      "cypress/globals": true,
+      "browser": false
     },
     "extends": ["airbnb", "airbnb-typescript", "prettier"],
     "rules": {
