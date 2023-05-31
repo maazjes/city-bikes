@@ -138,12 +138,20 @@ const DataTable = <T extends GridValidRowModel & { id: number }>({
   };
 
   const onSortModelChanged = (model: GridSortModel): void => {
-    setSortModel([model[0]]);
+    let newModel = model;
+
+    if (model.length === 0) {
+      newModel = [
+        { field: sortModel[0].field, sort: sortModel[0].sort === 'asc' ? 'desc' : 'asc' }
+      ];
+    }
+
+    setSortModel([newModel[0]]);
 
     const newQuery = {
       ...query,
-      sort: model[0].sort ?? undefined,
-      sortBy: model[0].field as Extract<keyof T, string>,
+      sort: newModel[0].sort ?? undefined,
+      sortBy: newModel[0].field as Extract<keyof T, string>,
       offset: 0
     };
     setQuery(newQuery);
@@ -182,7 +190,6 @@ const DataTable = <T extends GridValidRowModel & { id: number }>({
         onDeleteIconClick={(): void => setAlertVisible(true)}
       />
       <DataGrid
-        {...(!!getData && serverModeProps)}
         autoHeight
         checkboxSelection
         onRowSelectionModelChange={(model): void => {
@@ -205,6 +212,7 @@ const DataTable = <T extends GridValidRowModel & { id: number }>({
         columns={columns}
         initialState={initialState}
         pageSizeOptions={[10, 20, 30]}
+        {...(!!getData && serverModeProps)}
       />
       <Alert
         visible={alertVisible}
