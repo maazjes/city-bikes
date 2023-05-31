@@ -27,7 +27,7 @@ const SingleStation = (): JSX.Element => {
   });
 
   if (!station || !isLoaded) {
-    return false;
+    return <Box />;
   }
 
   return (

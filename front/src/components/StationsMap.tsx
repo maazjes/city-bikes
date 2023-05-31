@@ -5,7 +5,6 @@ import { Box, Typography } from '@mui/material';
 import { Station } from 'src/types';
 
 const StationsMap = ({ stations }: { stations: Station[] }): JSX.Element => {
-  console.log('map', stations);
   const [visibleStations, setVisibleStations] = useState<number[]>([]);
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: GOOGLE_API_KEY
