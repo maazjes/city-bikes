@@ -47,7 +47,24 @@ router.get<{}, Station[] | { rows: Station[]; count: number }, {}, StationsQuery
   }
 );
 
-router.post<{}, string[], Station[]>('/', upload.single('file'), async (req, res) => {
+router.post<{}, Station, InferAttributes<Station>>('/', async (req, res) => {
+  const { id, name, address, city, operator, capacity, x, y } = req.body;
+
+  const newStation = await Station.create({
+    id,
+    name,
+    address,
+    city,
+    operator,
+    capacity,
+    x,
+    y
+  });
+
+  res.json(newStation);
+});
+
+router.post<{}, string[], Station[]>('/bulk', upload.single('file'), async (req, res) => {
   if (!req.file) {
     throw new ApiError('File missing from request', { status: 400 });
   }

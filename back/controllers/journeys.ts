@@ -39,10 +39,27 @@ router.get<{}, { rows: Journey[]; count: number }, {}, JourneysQuery>('/', async
   res.status(200).send(paginated);
 });
 
-router.post<{}, string[]>('/', upload.single('file'), async (req, res) => {
+router.post<{}, Journey, InferAttributes<Journey>>('/', async (req, res) => {
+  const { departureTime, returnTime, departureStationId, returnStationId, distance, duration } =
+    req.body;
+
+  const newJourney = await Journey.create({
+    departureTime,
+    returnTime,
+    departureStationId,
+    returnStationId,
+    distance,
+    duration
+  });
+
+  res.json(newJourney);
+});
+
+router.post<{}, string[]>('/bulk', upload.single('file'), async (req, res) => {
   if (!req.file) {
     throw new ApiError('File missing from request', { status: 400 });
   }
+
   const faultyRows: string[] = [];
   const newJourneys: Omit<InferAttributes<Journey>, 'id'>[] = [];
   const newStations: InferAttributes<Station>[] = [];
