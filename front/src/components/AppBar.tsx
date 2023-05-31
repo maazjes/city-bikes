@@ -44,9 +44,11 @@ const Header = ({ loggedIn }: { loggedIn: boolean }): JSX.Element => {
       title: loggedIn ? 'Log out' : 'Log in',
       onClick: loggedIn ? onLogout : (): void => navigate('login')
     },
-    !loggedIn && {
-      title: 'Register',
-      onClick: (): void => navigate('register')
+    {
+      ...(!loggedIn && {
+        title: 'Register',
+        onClick: (): void => navigate('register')
+      })
     }
   ];
 
