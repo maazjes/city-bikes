@@ -232,4 +232,9 @@ router.get<{ id: string }, SingleStation, {}, SingleStationQuery>('/:id', async 
   });
 });
 
+router.delete<{}, {}, number[]>('/', async (req, res) => {
+  await Station.destroy({ where: { id: req.body } });
+  res.json({});
+});
+
 export default router;

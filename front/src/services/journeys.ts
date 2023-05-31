@@ -17,4 +17,12 @@ const getPaginatedJourneys = (
 const countJourneys = (): Promise<{ count: number }> =>
   api.get<{ count: number }>('journeys/count');
 
-export { createJourneysFromCSV, getPaginatedJourneys, countJourneys, createJourney };
+const deleteJourneys = (body: number[]): Promise<void> => api.delete('journeys', body);
+
+export {
+  createJourneysFromCSV,
+  getPaginatedJourneys,
+  countJourneys,
+  createJourney,
+  deleteJourneys
+};

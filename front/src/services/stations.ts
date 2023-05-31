@@ -25,11 +25,14 @@ const getSingleStation = (id: string, query?: SingleStationQuery): Promise<Singl
 const countStations = (): Promise<{ count: number }> =>
   api.get<{ count: number }>('stations/count');
 
+const deleteStations = (body: number[]): Promise<void> => api.delete('stations', body);
+
 export {
   createStationsFromCSV,
   getStations,
   getPaginatedStations,
   getSingleStation,
   createStation,
-  countStations
+  countStations,
+  deleteStations
 };

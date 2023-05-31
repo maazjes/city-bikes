@@ -145,4 +145,9 @@ router.post<{}, string[]>('/bulk', upload.single('file'), async (req, res) => {
   });
 });
 
+router.delete<{}, {}, number[]>('/', async (req, res) => {
+  await Journey.destroy({ where: { id: req.body } });
+  res.json({});
+});
+
 export default router;
