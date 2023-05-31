@@ -9,6 +9,7 @@ import theme from 'src/theme';
 import { Station } from 'src/types';
 import { createTextFile } from 'src/util/helpers';
 import * as yup from 'yup';
+import Notification from 'src/components/Notification';
 
 const validationSchema = yup.object().shape({
   id: yup.number().required(),
@@ -36,6 +37,8 @@ const AddStations = (): JSX.Element => {
   const [file, setFile] = useState<File>();
   const [faultyRows, setFaultyRows] = useState<string[]>([]);
   const [progress, setProgress] = useState(0);
+  const [notification, setNotification] = useState({ text: '', error: false });
+  const [notification1, setNotification1] = useState({ text: '', error: false });
   const estimatedRows = useRef<number>();
   const appBarHeight = useAppBarHeight();
 
@@ -59,20 +62,32 @@ const AddStations = (): JSX.Element => {
           setProgress(progress + newProgress);
         }
       }, 2000);
-
-      const res = await createStationsFromCSV(file);
+      try {
+        const res = await createStationsFromCSV(file);
+        setFaultyRows(res);
+      } catch (error) {
+        if (error instanceof Error) {
+          setNotification1({ error: true, text: error.message });
+        }
+      }
 
       if (progress < 100) {
         setProgress(100);
       }
 
       clearInterval(timer);
-      setFaultyRows(res);
     }
   };
 
   const onSingleSubmit = async (values: Station): Promise<void> => {
-    await createStation(values);
+    try {
+      await createStation(values);
+      setNotification({ error: false, text: 'Successfully created a new station!' });
+    } catch (error) {
+      if (error instanceof Error) {
+        setNotification({ error: true, text: error.message });
+      }
+    }
   };
 
   return (
@@ -138,6 +153,12 @@ const AddStations = (): JSX.Element => {
             <ProgressBar value={progress} />
           </Grid>
         )}
+        <Notification
+          error={notification1.error}
+          sx={{ mt: 1.5 }}
+          visible={!!notification1.text}
+          text={notification1.text}
+        />
         {faultyRows.length > 0 && (
           <Grid item>
             <Link href={createTextFile(faultyRows.join('\n'))}>
@@ -174,6 +195,12 @@ const AddStations = (): JSX.Element => {
             <Button size="large" type="submit" variant="contained" id="add-station-button">
               Add
             </Button>
+            <Notification
+              error={notification.error}
+              sx={{ mt: 1.5 }}
+              visible={!!notification.text}
+              text={notification.text}
+            />
           </Box>
         )}
       </Formik>

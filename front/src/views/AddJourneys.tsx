@@ -2,6 +2,7 @@ import { Box, Button, Container, Grid, Link, Typography } from '@mui/material';
 import { Formik } from 'formik';
 import { ChangeEvent, FormEvent, useState, useRef } from 'react';
 import FormikTextInput from 'src/components/FormikTextInput';
+import Notification from 'src/components/Notification';
 import ProgressBar from 'src/components/ProgressBar';
 import useAppBarHeight from 'src/hooks/useAppBarHeight';
 import { countJourneys, createJourney, createJourneysFromCSV } from 'src/services/journeys';
@@ -32,6 +33,8 @@ const AddJourneys = (): JSX.Element => {
   const [file, setFile] = useState<File>();
   const [faultyRows, setFaultyRows] = useState<string[]>([]);
   const [progress, setProgress] = useState(0);
+  const [notification, setNotification] = useState({ text: '', error: false });
+  const [notification1, setNotification1] = useState({ text: '', error: false });
   const estimatedRows = useRef<number>();
   const appBarHeight = useAppBarHeight();
 
@@ -56,7 +59,14 @@ const AddJourneys = (): JSX.Element => {
         }
       }, 2000);
 
-      const res = await createJourneysFromCSV(file);
+      try {
+        const res = await createJourneysFromCSV(file);
+        setFaultyRows(res);
+      } catch (error) {
+        if (error instanceof Error) {
+          setNotification1({ error: true, text: error.message });
+        }
+      }
 
       if (progress < 100) {
         setProgress(100);
@@ -67,7 +77,14 @@ const AddJourneys = (): JSX.Element => {
   };
 
   const onSingleSubmit = async (values: Omit<Journey, 'id'>): Promise<void> => {
-    await createJourney(values);
+    try {
+      await createJourney(values);
+      setNotification({ error: false, text: 'Successfully created a new journey!' });
+    } catch (error) {
+      if (error instanceof Error) {
+        setNotification({ error: true, text: error.message });
+      }
+    }
   };
 
   return (
@@ -133,6 +150,12 @@ const AddJourneys = (): JSX.Element => {
             <ProgressBar value={progress} />
           </Grid>
         )}
+        <Notification
+          error={notification1.error}
+          sx={{ mt: 1.5 }}
+          visible={!!notification1.text}
+          text={notification1.text}
+        />
         {faultyRows.length > 0 && (
           <Grid item width="100%">
             <Link href={createTextFile(faultyRows.join('\n'))}>

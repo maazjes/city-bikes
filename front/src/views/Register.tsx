@@ -1,8 +1,10 @@
 import { Button, Container } from '@mui/material';
 import { Formik } from 'formik';
+import { useState } from 'react';
 import FormikTextInput from 'src/components/FormikTextInput';
 import { createUser } from 'src/services/users';
 import * as yup from 'yup';
+import Notification from 'src/components/Notification';
 
 const validationSchema = yup.object().shape({
   username: yup
@@ -28,8 +30,17 @@ const initialValues = {
 };
 
 const Register = (): JSX.Element => {
+  const [notification, setNotification] = useState({ text: '', error: false });
+
   const onSubmit = async ({ username, password }: typeof initialValues): Promise<void> => {
-    await createUser({ username, password });
+    try {
+      await createUser({ username, password });
+      setNotification({ error: false, text: 'Successfully registered. You can now login!' });
+    } catch (error) {
+      if (error instanceof Error) {
+        setNotification({ error: true, text: error.message });
+      }
+    }
   };
 
   return (
@@ -55,6 +66,11 @@ const Register = (): JSX.Element => {
           <Button size="large" type="submit" variant="contained">
             Register
           </Button>
+          <Notification
+            error={notification.error}
+            text={notification.text}
+            visible={!!notification.text}
+          />
         </Container>
       )}
     </Formik>
