@@ -179,6 +179,14 @@ router.get<{ id: string }, SingleStation, {}, SingleStationQuery>('/:id', async 
     };
   }
 
+  if (after && !before) {
+    where = { returnTime: { [Op.gte]: after } };
+  }
+
+  if (before && !after) {
+    where = { returnTime: { [Op.lte]: before } };
+  }
+
   if (!station) {
     throw new ApiError('Station not found', { status: 400 });
   }
