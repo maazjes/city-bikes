@@ -1,8 +1,11 @@
 import api from 'src/util/api';
 import {
+  Paginated,
+  PaginatedSortedFilteredQuery,
   SingleStation,
   SingleStationQuery,
-  Station
+  Station,
+  StationsQuery
 } from 'src/types';
 
 const createStationsFromCSV = (file: File): Promise<string[]> => {
@@ -16,8 +19,9 @@ const createStation = (body: Station): Promise<Station> => api.post<Station>('st
 const getStations = (query?: StationsQuery): Promise<Station[]> =>
   api.get<Station[]>('stations', query);
 
-const getPaginatedStations = (query: PaginatedStationsQuery): Promise<PaginatedStations> =>
-  api.get<PaginatedStations>('stations', query);
+const getPaginatedStations = (
+  query: PaginatedSortedFilteredQuery<Station>
+): Promise<Paginated<Station>> => api.get<Paginated<Station>>('stations', query);
 
 const getSingleStation = (id: string, query?: SingleStationQuery): Promise<SingleStation> =>
   api.get<SingleStation>(`stations/${id}`, query);
