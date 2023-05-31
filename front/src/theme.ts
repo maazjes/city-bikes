@@ -5,6 +5,9 @@ const theme = responsiveFontSizes(
     typography: {
       h3: {
         fontSize: 25
+      },
+      body1: {
+        fontSize: 16
       }
     }
   })
