@@ -14,5 +14,7 @@ const getPaginatedJourneys = (
   query: PaginatedSortedFilteredQuery<Journey>
 ): Promise<Paginated<Journey>> => api.get<Paginated<Journey>>('journeys', query);
 
+const countJourneys = (): Promise<{ count: number }> =>
+  api.get<{ count: number }>('journeys/count');
 
 export { createJourneysFromCSV, getPaginatedJourneys, countJourneys, createJourney };

@@ -11,6 +11,11 @@ import { createWhere, isNumber, isDate } from '../util/helpers.js';
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
+router.get<{}, { count: number }>('/count', async (_req, res) => {
+  const count = await Journey.count();
+  res.json({ count });
+});
+
 router.get<{}, { rows: Journey[]; count: number }, {}, JourneysQuery>('/', async (req, res) => {
   const { operator, value, filterBy, sortBy, sort } = req.query;
 

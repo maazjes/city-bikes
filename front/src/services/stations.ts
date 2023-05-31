@@ -22,10 +22,14 @@ const getPaginatedStations = (query: PaginatedStationsQuery): Promise<PaginatedS
 const getSingleStation = (id: string, query?: SingleStationQuery): Promise<SingleStation> =>
   api.get<SingleStation>(`stations/${id}`, query);
 
+const countStations = (): Promise<{ count: number }> =>
+  api.get<{ count: number }>('stations/count');
+
 export {
   createStationsFromCSV,
   getStations,
   getPaginatedStations,
   getSingleStation,
-  createStation
+  createStation,
+  countStations
 };

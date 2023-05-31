@@ -11,6 +11,11 @@ import { Journey, Station } from '../models/index.js';
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
+router.get<{}, { count: number }>('/count', async (_req, res) => {
+  const count = await Station.count();
+  res.json({ count });
+});
+
 router.get<{}, Station[] | { rows: Station[]; count: number }, {}, StationsQuery>(
   '/',
   async (req, res) => {
