@@ -48,9 +48,15 @@ const Login = (): JSX.Element => {
           maxWidth="xs"
           sx={{ display: 'flex', flexDirection: 'column', marginTop: '10%' }}
         >
-          <FormikTextInput required type="text" label="Username" name="username" />
-          <FormikTextInput required type="password" label="Password" name="password" />
-          <Button size="large" type="submit" variant="contained">
+          <FormikTextInput required type="text" label="Username" name="username" id="username" />
+          <FormikTextInput
+            required
+            type="password"
+            label="Password"
+            name="password"
+            id="password"
+          />
+          <Button size="large" type="submit" variant="contained" id="login-button">
             Login
           </Button>
         </Container>

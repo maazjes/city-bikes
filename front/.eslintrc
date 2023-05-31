@@ -1,9 +1,12 @@
 {
-    "plugins": ["react", "import", "unused-imports", "prettier"],
+    "plugins": ["react", "import", "unused-imports", "prettier", "cypress"],
     "settings": {
       "react": {
         "version": "detect"
       }
+    },
+    "env": {
+      "cypress/globals": true
     },
     "extends": ["airbnb", "airbnb-typescript", "prettier"],
     "rules": {

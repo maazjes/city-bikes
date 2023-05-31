@@ -1,0 +1,5 @@
+﻿Departure,Return,Departure station id,Departure station name,Return station id,Return station name,Covered distance (m),Duration (sec.)
+2021-07-31T23:59:59,2021-08-01T00:09:15,9999,Pasilan asema,9999,Messeniuksenkatu,8888,553
+2021-07-31T23:59:55,2021-08-01T00:08:45,9999,Velodrominrinne,9999,Venttiilikuja,1307,532
+2021-07-31T23:59:55,2021-08-01T00:03:24,9999,Abraham Wetterin tie,9999,Herttoniemi (M),820,205
+2021-07-31T23:59:47,2021-08-01T00:05:52,9999,Lintulahdenkatu,9999,Liisanpuistikko,1298,369

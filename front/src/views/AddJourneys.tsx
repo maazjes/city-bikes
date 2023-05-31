@@ -74,10 +74,9 @@ const AddJourneys = (): JSX.Element => {
     <Container
       maxWidth="xs"
       sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-evenly',
-        minHeight: Math.max(window.innerHeight - appBarHeight, 760)
+        minHeight: Math.max(window.innerHeight - appBarHeight, 760),
+        pt: 5,
+        pb: 5
       }}
     >
       <Grid
@@ -101,7 +100,7 @@ const AddJourneys = (): JSX.Element => {
             justifyContent="center"
           >
             <Grid item>
-              <Button variant="contained" component="label">
+              <Button variant="contained" component="label" id="select-file">
                 Select File
                 <input onChange={(e): void => onChange(e)} type="file" hidden />
               </Button>
@@ -116,7 +115,7 @@ const AddJourneys = (): JSX.Element => {
               </Grid>
             )}
             <Grid item>
-              <Button type="submit" variant="outlined">
+              <Button type="submit" variant="outlined" id="upload-file">
                 Upload
               </Button>
             </Grid>
@@ -155,30 +154,50 @@ const AddJourneys = (): JSX.Element => {
               handleSubmit();
             }}
             component="form"
-            sx={{ display: 'flex', flexDirection: 'column' }}
+            sx={{ display: 'flex', flexDirection: 'column', mt: 8 }}
           >
             <Typography mb={3} align="center" variant="h3">
               Add a single journey
             </Typography>
-            <FormikTextInput required type="text" label="Departure time" name="departureTime" />
-            <FormikTextInput required type="text" label="Return time" name="returnTime" />
+            <FormikTextInput
+              required
+              type="text"
+              label="Departure time"
+              name="departureTime"
+              id="departureTime"
+            />
+            <FormikTextInput
+              required
+              type="text"
+              label="Return time"
+              name="returnTime"
+              id="returnTime"
+            />
             <FormikTextInput
               required
               type="text"
               label="Departure station ID"
               name="departureStationId"
+              id="departureStationId"
             />
             <FormikTextInput
               required
               type="text"
               label="Return station ID"
               name="returnStationId"
+              id="returnStationId"
             />
-            <FormikTextInput required type="text" label="Distance" name="distance" />
-            <FormikTextInput required type="text" label="Duration" name="duration" />
-            <Button size="large" type="submit" variant="contained">
+            <FormikTextInput required type="text" label="Distance" name="distance" id="distance" />
+            <FormikTextInput required type="text" label="Duration" name="duration" id="duration" />
+            <Button size="large" type="submit" variant="contained" id="add-journeys-button">
               Add
             </Button>
+            <Notification
+              error={notification.error}
+              sx={{ mt: 1.5 }}
+              visible={!!notification.text}
+              text={notification.text}
+            />
           </Box>
         )}
       </Formik>

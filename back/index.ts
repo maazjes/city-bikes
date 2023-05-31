@@ -2,12 +2,13 @@ import 'express-async-errors';
 import express from 'express';
 import cors from 'cors';
 import http from 'http';
-import { PORT } from './util/config.js';
+import { NODE_ENV, PORT } from './util/config.js';
 import { connectToDatabase } from './util/db.js';
 import login from './controllers/login.js';
 import users from './controllers/users.js';
 import stations from './controllers/stations.js';
 import journeys from './controllers/journeys.js';
+import resetTests from './controllers/resetTests.js';
 import { errorHandler } from './util/middleware.js';
 
 const app = express();
@@ -21,6 +22,10 @@ app.use('/api/login', login);
 app.use('/api/users', users);
 app.use('/api/stations', stations);
 app.use('/api/journeys', journeys);
+
+if (NODE_ENV === 'test') {
+  app.use('/api/resetTests', resetTests);
+}
 
 app.use(errorHandler);
 

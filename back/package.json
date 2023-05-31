@@ -6,7 +6,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node --watch --loader ts-node/esm index.ts"
+    "dev": "node --watch --loader ts-node/esm index.ts",
+    "start:test": "NODE_ENV=test node --loader ts-node/esm index.ts"
   },
   "repository": {
     "type": "git",
