@@ -3,32 +3,39 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 interface TableToolbarProps {
-  numSelected: number;
+  selected: number[];
   title: string;
   itemRight?: JSX.Element;
+  onDeleteIconClick: (selected: number[]) => void;
 }
 
 const TableToolbar = ({
-  numSelected,
+  selected,
   title,
-  itemRight = undefined
+  itemRight = undefined,
+  onDeleteIconClick
 }: TableToolbarProps): JSX.Element => (
   <Toolbar
     sx={{
       pl: { sm: 2 },
       pr: { xs: 1, sm: 1 },
-      ...(numSelected > 0 && {
+      ...(selected.length > 0 && {
         bgcolor: (theme) => alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity)
       })
     }}
   >
-    {numSelected > 0 ? (
+    {selected.length > 0 ? (
       <>
         <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div">
-          {numSelected} selected
+          {selected.length} selected
         </Typography>
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton
+            onClick={(e): void => {
+              e.preventDefault();
+              onDeleteIconClick(selected);
+            }}
+          >
             <DeleteIcon />
           </IconButton>
         </Tooltip>

@@ -1,10 +1,10 @@
-import { Checkbox, Link, Typography } from '@mui/material';
+import { Box, Checkbox, Link, Typography } from '@mui/material';
 import { GridColDef, GridFilterModel } from '@mui/x-data-grid';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import DataTable from 'src/components/DataTable';
 import StationsMap from 'src/components/StationsMap';
-import { getStations } from 'src/services/stations';
+import { deleteStations, getStations } from 'src/services/stations';
 import { Operator, Station } from 'src/types';
 import { createComparator } from 'src/util/helpers';
 
@@ -43,7 +43,7 @@ const columns: (Omit<GridColDef<Station>, 'field'> & { field: keyof Station })[]
 const Stations = (): JSX.Element => {
   const { data, isLoading } = useQuery('Stations', () => getStations());
   const [filteredData, setFilteredData] = useState<Station[]>();
-  const [mapView, setMapView] = useState(false);
+  const [mapViewOpen, setMapViewOpen] = useState(false);
 
   const onFilterModelChange = (model: GridFilterModel): void => {
     if (!data) {
@@ -67,7 +67,7 @@ const Stations = (): JSX.Element => {
   const mapViewCheckBox = (
     <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
       <Typography variant="body1">Map view</Typography>
-      <Checkbox onChange={(): void => setMapView(!mapView)} />
+      <Checkbox onChange={(): void => setMapViewOpen(!mapViewOpen)} />
     </div>
   );
 
@@ -76,17 +76,19 @@ const Stations = (): JSX.Element => {
   }
 
   return (
-    <>
+    <Box pt={2} pl={3} pr={3} pb={3}>
       <DataTable<Station>
-        hide={mapView}
+        hide={mapViewOpen}
         title="Stations"
         columns={columns}
         data={filteredData || data}
         onFilterModelChange={onFilterModelChange}
         toolbarItemRight={mapViewCheckBox}
+        onItemDelete={(selected): Promise<void> => deleteStations(selected)}
+        queryKey="stations"
       />
-      {mapView && <StationsMap stations={filteredData || data} />}
-    </>
+      {mapViewOpen && <StationsMap stations={filteredData || data} />}
+    </Box>
   );
 };
 

@@ -9,34 +9,56 @@ import {
   GridFilterPanel
 } from '@mui/x-data-grid';
 import { useMemo, useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { GetPaginatedSortedFilteredData, Operator, PaginatedSortedFilteredQuery } from 'src/types';
+import queryClient from 'src/util/queryClient';
 import TableToolbar from './TableToolbar';
+import Alert from './Alert';
 
 interface DataTableBaseProps<T extends GridValidRowModel> {
   hide?: boolean;
   title: string;
   columns: GridColDef<T>[];
+  queryKey: string;
   onFilterModelChange?: (model: GridFilterModel) => void;
   onSortModelChange?: (model: GridSortModel) => void;
   toolbarItemRight?: JSX.Element;
+  onItemDelete: (selected: number[]) => Promise<void>;
 }
 
 interface ServerModeProps<T extends GridValidRowModel> extends DataTableBaseProps<T> {
   getData: GetPaginatedSortedFilteredData<T>;
-  queryKey: string;
   data?: never;
 }
 
 interface ClientModeProps<T extends GridValidRowModel> extends DataTableBaseProps<T> {
   getData?: never;
-  queryKey?: never;
   data: T[];
 }
 
+const hideSlots = {
+  panel: (): null => null,
+  footer: (): null => null,
+  columnHeaders: (): null => null,
+  noResultsOverlay: (): null => null
+};
+
+const hideSX = {
+  '& .MuiDataGrid-virtualScrollerContent': {
+    height: '0px !important'
+  }
+};
+
+const initialState = {
+  pagination: {
+    paginationModel: { page: 0, pageSize: 10 },
+    sortModel: { field: 'id', sort: 'asc' }
+  }
+};
+
 // Requires a generic type to work.
 
-const DataTable = <T extends GridValidRowModel>({
+const DataTable = <T extends GridValidRowModel & { id: number }>({
   hide = false,
   title,
   getData,
@@ -44,11 +66,14 @@ const DataTable = <T extends GridValidRowModel>({
   queryKey,
   onFilterModelChange = undefined,
   data = undefined,
-  toolbarItemRight = undefined
+  toolbarItemRight = undefined,
+  onItemDelete
 }: ServerModeProps<T> | ClientModeProps<T>): JSX.Element => {
   const [filterModel, setFilterModel] = useState<GridFilterModel>();
   const [sortModel, setSortModel] = useState<GridSortModel>([{ field: 'id', sort: 'asc' }]);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>();
+  const [clientModeData, setClientModeData] = useState<T[]>(data || []);
+  const [alertVisible, setAlertVisible] = useState(false);
 
   const initialQuery: PaginatedSortedFilteredQuery<T> = {
     sort: 'asc',
@@ -58,14 +83,31 @@ const DataTable = <T extends GridValidRowModel>({
   };
 
   const [query, setQuery] = useState<PaginatedSortedFilteredQuery<T>>(initialQuery);
+  const [selected, setSelected] = useState<number[]>([]);
 
-  const [numSelected, setNumSelected] = useState<number>(0);
+  const finalQueryKey = useMemo(() => [queryKey, query], [query]);
 
   const { data: serverModeData, isLoading } = useQuery(
-    [queryKey || '', query],
+    finalQueryKey,
     () => getData && getData(query),
     {
       enabled: !!getData
+    }
+  );
+
+  const { mutate: deleteItems } = useMutation<unknown, unknown, number[]>(
+    `delete ${queryKey}`,
+    (ids) => onItemDelete(ids),
+    {
+      onSuccess: () => {
+        if (getData) {
+          queryClient.setQueryData<T[] | undefined>(finalQueryKey, (oldData) => [
+            ...oldData!.filter((item) => !selected.includes(item.id))
+          ]);
+        } else {
+          setClientModeData([...clientModeData.filter((item) => !selected.includes(item.id))]);
+        }
+      }
     }
   );
 
@@ -108,18 +150,15 @@ const DataTable = <T extends GridValidRowModel>({
   };
 
   const rows = useMemo(
-    () => (serverModeData ? serverModeData.rows.flat(0) : !getData ? data! : []),
-    [data, serverModeData]
+    () => (serverModeData ? serverModeData.rows.flat(0) : !getData ? clientModeData : []),
+    [serverModeData, clientModeData]
   );
 
-  const rowCount = serverModeData ? serverModeData.count : data ? data.length : 0;
-
-  const initialState = {
-    pagination: {
-      paginationModel: { page: 0, pageSize: 10 },
-      sortModel: { field: 'id', sort: 'asc' }
-    }
-  };
+  const rowCount = serverModeData
+    ? serverModeData.count
+    : clientModeData
+    ? clientModeData.length
+    : 0;
 
   const serverModeProps: Partial<DataGridProps> = {
     paginationMode: 'server',
@@ -134,28 +173,20 @@ const DataTable = <T extends GridValidRowModel>({
     loading: isLoading
   };
 
-  const hideSlots = {
-    panel: () => null,
-    footer: () => null,
-    columnHeaders: () => null,
-    noResultsOverlay: () => null
-  };
-
-  const hideSX = {
-    '& .MuiDataGrid-virtualScrollerContent': {
-      height: '0px !important'
-    }
-  };
-
   return (
     <>
-      <TableToolbar title={title} itemRight={toolbarItemRight} numSelected={numSelected} />
+      <TableToolbar
+        title={title}
+        itemRight={toolbarItemRight}
+        selected={selected}
+        onDeleteIconClick={(): void => setAlertVisible(true)}
+      />
       <DataGrid
         {...(!!getData && serverModeProps)}
         autoHeight
         checkboxSelection
         onRowSelectionModelChange={(model): void => {
-          setNumSelected(model.length);
+          setSelected(model as number[]);
         }}
         slots={{
           toolbar: GridFilterPanel,
@@ -174,6 +205,16 @@ const DataTable = <T extends GridValidRowModel>({
         columns={columns}
         initialState={initialState}
         pageSizeOptions={[10, 20, 30]}
+      />
+      <Alert
+        visible={alertVisible}
+        setVisible={setAlertVisible}
+        title={`Are you sure you want to delete ${selected.length} items?`}
+        content=""
+        handleYes={(): void => {
+          setAlertVisible(false);
+          deleteItems(selected);
+        }}
       />
     </>
   );

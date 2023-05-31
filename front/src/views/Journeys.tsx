@@ -1,9 +1,10 @@
+import { Box } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import DataTable from 'src/components/DataTable';
-import { getPaginatedJourneys } from 'src/services/journeys';
+import { deleteJourneys, getPaginatedJourneys } from 'src/services/journeys';
 import { Journey } from 'src/types';
 
-const columns: (Omit<GridColDef, 'field'> & { field: keyof Journey })[] = [
+const columns: (Omit<GridColDef<Journey>, 'field'> & { field: keyof Journey })[] = [
   { field: 'id', headerName: 'ID', type: 'number', flex: 1, align: 'left', headerAlign: 'left' },
   {
     field: 'departureTime',
@@ -39,12 +40,15 @@ const columns: (Omit<GridColDef, 'field'> & { field: keyof Journey })[] = [
 ];
 
 const Journeys = (): JSX.Element => (
-  <DataTable<Journey>
-    title="Journeys"
-    columns={columns}
-    getData={getPaginatedJourneys}
-    queryKey="PaginatedJourneys"
-  />
+  <Box pt={2} pl={3} pr={3} pb={3}>
+    <DataTable<Journey>
+      title="Journeys"
+      columns={columns}
+      getData={getPaginatedJourneys}
+      queryKey="PaginatedJourneys"
+      onItemDelete={(selected): Promise<void> => deleteJourneys(selected)}
+    />
+  </Box>
 );
 
 export default Journeys;
