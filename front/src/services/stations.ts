@@ -1,5 +1,9 @@
 import api from 'src/util/api';
 import { PaginatedStations, PaginatedStationsQuery, Station, StationsQuery } from 'src/types';
+import {
+  SingleStation,
+  SingleStationQuery,
+} from 'src/types';
 
 const createStationsFromCSV = (file: File): Promise<string[]> => {
   const formData = new FormData();
@@ -13,4 +17,7 @@ const getStations = (query?: StationsQuery): Promise<Station[]> =>
 const getPaginatedStations = (query: PaginatedStationsQuery): Promise<PaginatedStations> =>
   api.get<PaginatedStations>('stations', query);
 
-export { createStationsFromCSV, getStations, getPaginatedStations };
+const getSingleStation = (id: string, query?: SingleStationQuery): Promise<SingleStation> =>
+  api.get<SingleStation>(`stations/${id}`, query);
+
+export { createStationsFromCSV, getStations, getPaginatedStations, getSingleStation };

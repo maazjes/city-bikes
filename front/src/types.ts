@@ -32,6 +32,15 @@ export interface Station {
   longitude: number | null;
 }
 
+export interface SingleStation extends Station {
+  topStationsTo: Station[];
+  topStationsFrom: Station[];
+  averageDistanceTo: number | null;
+  averageDistanceFrom: number | null;
+  totalJourneysTo: number;
+  totalJourneysFrom: number;
+}
+
 export interface Journey {
   id: number;
   departureTime: Date;
@@ -42,7 +51,6 @@ export interface Journey {
   duration: number;
 }
 
-export type PaginationQuery = {
   limit: number;
   offset: number;
 };
@@ -88,3 +96,5 @@ export type PaginatedSortedFilteredQuery<T = never> = PaginationQuery &
 export type SortedFilteredQuery<T = never> = Partial<SortedQuery<T> & FilteredQuery<T>>;
 
 export type StationsQuery = Partial<FilteredQuery<Station> & SortedQuery<Station>>;
+
+export type SingleStationQuery = { after?: string; before?: string };
