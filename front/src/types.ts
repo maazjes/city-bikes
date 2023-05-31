@@ -51,6 +51,7 @@ export interface Journey {
   duration: number;
 }
 
+export type PaginatedQuery = {
   limit: number;
   offset: number;
 };
@@ -90,7 +91,7 @@ export type GetPaginatedSortedFilteredData<T = never> = (
   query: PaginatedSortedFilteredQuery<T>
 ) => Promise<Paginated<T>>;
 
-export type PaginatedSortedFilteredQuery<T = never> = PaginationQuery &
+export type PaginatedSortedFilteredQuery<T = never> = PaginatedQuery &
   Partial<SortedQuery<T> & FilteredQuery<T>>;
 
 export type SortedFilteredQuery<T = never> = Partial<SortedQuery<T> & FilteredQuery<T>>;
