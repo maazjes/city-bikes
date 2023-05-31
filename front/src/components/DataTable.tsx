@@ -152,6 +152,7 @@ const DataTable = <T extends GridValidRowModel>({
       <TableToolbar title={title} itemRight={toolbarItemRight} numSelected={numSelected} />
       <DataGrid
         {...(!!getData && serverModeProps)}
+        autoHeight
         checkboxSelection
         onRowSelectionModelChange={(model): void => {
           setNumSelected(model.length);
