@@ -43,13 +43,17 @@ const Header = ({ loggedIn }: { loggedIn: boolean }): JSX.Element => {
     {
       title: loggedIn ? 'Log out' : 'Log in',
       onClick: loggedIn ? onLogout : (): void => navigate('login')
+    },
+    !loggedIn && {
+      title: 'Register',
+      onClick: (): void => navigate('register')
     }
   ];
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
       <List>
-        <ListItem />
+        <ListItem key="spacing" />
         {navItems.map((item) => (
           <ListItem key={item.title} disablePadding>
             <ListItemButton sx={{ textAlign: 'center' }} onClick={item.onClick}>
