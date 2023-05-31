@@ -43,8 +43,8 @@ export interface SingleStation extends Station {
 
 export interface Journey {
   id: number;
-  departureTime: Date;
-  returnTime: Date;
+  departureTime: string;
+  returnTime: string;
   departureStationId: number;
   returnStationId: number;
   distance: number;
