@@ -1,56 +1,61 @@
-import { TextField, Button, Container } from '@mui/material';
-import { useState, useContext } from 'react';
+import { Button, Container } from '@mui/material';
+import { useContext } from 'react';
 import { login } from 'src/services/login';
-import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import TokenContext from 'src/context/token';
+import { Formik } from 'formik';
+import FormikTextInput from 'src/components/FormikTextInput';
+import * as yup from 'yup';
+
+const validationSchema = yup.object().shape({
+  username: yup
+    .string()
+    .min(3, 'Minimum length of username is 3')
+    .max(30, 'Maximum length of email is 30')
+    .required('Username is required'),
+  password: yup
+    .string()
+    .min(8, 'Minimum length of password is 8')
+    .max(30, 'Maximum length of password is 30')
+    .required('Password is required')
+});
+
+const initialValues = {
+  username: '',
+  password: ''
+};
 
 const Login = (): JSX.Element => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const { setToken } = useContext(TokenContext)!;
   const navigate = useNavigate();
-  const { refetch } = useQuery('login', () => login({ username, password }), {
-    enabled: false
-  });
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
-    e.preventDefault();
-    const { data } = await refetch();
-    if (data) {
-      localStorage.setItem('token', data.token);
-      setToken(data.token);
-    }
+  const onSubmit = async (values: typeof initialValues): Promise<void> => {
+    const { token } = await login(values);
+    localStorage.setItem('token', token);
+    setToken(token);
     navigate('/');
   };
 
   return (
-    <Container
-      onSubmit={onSubmit}
-      component="form"
-      maxWidth="xs"
-      sx={{ display: 'flex', flexDirection: 'column', marginTop: '10%' }}
-    >
-      <TextField
-        onChange={(e): void => setUsername(e.target.value)}
-        type="text"
-        sx={{ m: 1 }}
-        required
-        label="Username"
-        id="margin-dense"
-      />
-      <TextField
-        onChange={(e): void => setPassword(e.target.value)}
-        type="password"
-        sx={{ m: 1 }}
-        required
-        label="Password"
-        id="margin-dense"
-      />
-      <Button sx={{ m: 1 }} size="large" type="submit" variant="contained">
-        Login
-      </Button>
-    </Container>
+    <Formik validationSchema={validationSchema} initialValues={initialValues} onSubmit={onSubmit}>
+      {({ handleSubmit }): JSX.Element => (
+        <Container
+          onSubmit={(e): void => {
+            e.preventDefault();
+            handleSubmit();
+          }}
+          component="form"
+          maxWidth="xs"
+          sx={{ display: 'flex', flexDirection: 'column', marginTop: '10%' }}
+        >
+          <FormikTextInput required type="text" label="Username" name="username" />
+          <FormikTextInput required type="password" label="Password" name="password" />
+          <Button size="large" type="submit" variant="contained">
+            Login
+          </Button>
+        </Container>
+      )}
+    </Formik>
   );
 };
 
