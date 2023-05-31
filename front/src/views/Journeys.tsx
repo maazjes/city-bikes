@@ -17,6 +17,7 @@ const columns: (Omit<GridColDef<Journey>, 'field'> & { field: keyof Journey })[]
   {
     field: 'departureStationId',
     headerName: 'Departure station id',
+    type: 'number',
     flex: 1,
     align: 'left',
     headerAlign: 'left'
@@ -24,6 +25,7 @@ const columns: (Omit<GridColDef<Journey>, 'field'> & { field: keyof Journey })[]
   {
     field: 'returnStationId',
     headerName: 'Return station id',
+    type: 'number',
     flex: 1,
     align: 'left',
     headerAlign: 'left'
@@ -36,7 +38,14 @@ const columns: (Omit<GridColDef<Journey>, 'field'> & { field: keyof Journey })[]
     align: 'left',
     headerAlign: 'left'
   },
-  { field: 'duration', headerName: 'Duration', flex: 1, align: 'left', headerAlign: 'left' }
+  {
+    field: 'duration',
+    headerName: 'Duration',
+    type: 'number',
+    flex: 1,
+    align: 'left',
+    headerAlign: 'left'
+  }
 ];
 
 const Journeys = (): JSX.Element => (
