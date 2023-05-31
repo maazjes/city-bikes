@@ -1,4 +1,4 @@
-import { Box, Button, Container, Grid, TextField, Typography } from '@mui/material';
+import { Box, Button, Container, Grid, Link, Typography } from '@mui/material';
 import { Formik } from 'formik';
 import { ChangeEvent, FormEvent, useState, useRef } from 'react';
 import FormikTextInput from 'src/components/FormikTextInput';
@@ -7,6 +7,7 @@ import useAppBarHeight from 'src/hooks/useAppBarHeight';
 import { countJourneys, createJourney, createJourneysFromCSV } from 'src/services/journeys';
 import theme from 'src/theme';
 import { Journey } from 'src/types';
+import { createTextFile } from 'src/util/helpers';
 import * as yup from 'yup';
 
 const validationSchema = yup.object().shape({
@@ -62,7 +63,6 @@ const AddJourneys = (): JSX.Element => {
       }
 
       clearInterval(timer);
-      setFaultyRows(res);
     }
   };
 
@@ -135,10 +135,9 @@ const AddJourneys = (): JSX.Element => {
         )}
         {faultyRows.length > 0 && (
           <Grid item width="100%">
-            <Typography sx={{ mb: 2 }} align="center" variant="body1">
-              These rows didn&apos;t pass the validation
-            </Typography>
-            <TextField contentEditable={false} value={faultyRows.join('\n')} fullWidth multiline />
+            <Link href={createTextFile(faultyRows.join('\n'))}>
+              <Typography variant="body1">Download faulty rows</Typography>
+            </Link>
           </Grid>
         )}
       </Grid>

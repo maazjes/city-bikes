@@ -1,11 +1,12 @@
-export const stableSort = <T>(array: readonly T[], comparator: (a: T, b: T) => number): T[] => {
-  const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) {
-      return order;
-    }
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
+import { Operator } from 'src/types';
+
+export const isString = (x: unknown): x is string => typeof x === 'string' || x instanceof String;
+
+const isNumber = (x: unknown): x is number =>
+  !Number.isNaN(x) && !Number.isNaN(parseFloat(String(x)));
+
+export const createTextFile = (text: string): string => {
+  const data = new Blob([text], { type: 'text/csv' });
+  const csvURL = window.URL.createObjectURL(data);
+  return csvURL;
 };

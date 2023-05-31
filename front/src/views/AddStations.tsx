@@ -7,6 +7,7 @@ import useAppBarHeight from 'src/hooks/useAppBarHeight';
 import { countStations, createStation, createStationsFromCSV } from 'src/services/stations';
 import theme from 'src/theme';
 import { Station } from 'src/types';
+import { createTextFile } from 'src/util/helpers';
 import * as yup from 'yup';
 
 const validationSchema = yup.object().shape({
@@ -138,11 +139,10 @@ const AddStations = (): JSX.Element => {
           </Grid>
         )}
         {faultyRows.length > 0 && (
-          <Grid item width="100%">
-            <Typography sx={{ mb: 2 }} align="center" variant="body1">
-              These rows didn&apos;t pass the validation
-            </Typography>
-            <TextField contentEditable={false} value={faultyRows.join('\n')} fullWidth multiline />
+          <Grid item>
+            <Link href={createTextFile(faultyRows.join('\n'))}>
+              <Typography variant="body1">Download faulty rows</Typography>
+            </Link>
           </Grid>
         )}
       </Grid>
