@@ -84,17 +84,17 @@ const SingleStation = (): JSX.Element => {
           </Grid>
         </LocalizationProvider>
       </Box>
-      {station.x && station.y && (
+      {station.latitude && station.longitude && (
         <GoogleMap
           mapContainerStyle={{
             width: '100%',
             height: '500px'
           }}
           mapContainerClassName="map-container"
-          center={{ lat: station.y, lng: station.x }}
+          center={{ lat: station.latitude, lng: station.longitude }}
           zoom={12}
         >
-          <MarkerF position={{ lat: station.y, lng: station.x }} />
+          <MarkerF position={{ lat: station.latitude, lng: station.longitude }} />
         </GoogleMap>
       )}
       <Grid

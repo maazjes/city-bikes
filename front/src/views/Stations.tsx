@@ -1,4 +1,4 @@
-import { Checkbox, Typography } from '@mui/material';
+import { Checkbox, Link, Typography } from '@mui/material';
 import { GridColDef, GridFilterModel } from '@mui/x-data-grid';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
@@ -8,8 +8,16 @@ import { getStations } from 'src/services/stations';
 import { Operator, Station } from 'src/types';
 import { createComparator } from 'src/util/helpers';
 
-const columns: (Omit<GridColDef, 'field'> & { field: keyof Station })[] = [
-  { field: 'id', headerName: 'ID', type: 'number', flex: 1, align: 'left', headerAlign: 'left' },
+const columns: (Omit<GridColDef<Station>, 'field'> & { field: keyof Station })[] = [
+  {
+    field: 'id',
+    headerName: 'ID',
+    type: 'number',
+    flex: 1,
+    align: 'left',
+    headerAlign: 'left',
+    renderCell: ({ row }) => <Link href={`stations/${row.id}`}>{row.id}</Link>
+  },
   { field: 'name', headerName: 'Name', flex: 1, align: 'left', headerAlign: 'left' },
   { field: 'address', headerName: 'Address', flex: 1, align: 'left', headerAlign: 'left' },
   {
@@ -28,8 +36,8 @@ const columns: (Omit<GridColDef, 'field'> & { field: keyof Station })[] = [
     align: 'left',
     headerAlign: 'left'
   },
-  { field: 'y', headerName: 'Latitude', flex: 1, align: 'left', headerAlign: 'left' },
-  { field: 'x', headerName: 'Longitude', flex: 1, align: 'left', headerAlign: 'left' }
+  { field: 'latitude', headerName: 'Latitude', flex: 1, align: 'left', headerAlign: 'left' },
+  { field: 'longitude', headerName: 'Longitude', flex: 1, align: 'left', headerAlign: 'left' }
 ];
 
 const Stations = (): JSX.Element => {

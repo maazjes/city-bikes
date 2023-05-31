@@ -53,7 +53,7 @@ router.get<{}, Station[] | { rows: Station[]; count: number }, {}, StationsQuery
 );
 
 router.post<{}, Station, InferAttributes<Station>>('/', async (req, res) => {
-  const { id, name, address, city, operator, capacity, x, y } = req.body;
+  const { id, name, address, city, operator, capacity, latitude, longitude } = req.body;
 
   const newStation = await Station.create({
     id,
@@ -62,8 +62,8 @@ router.post<{}, Station, InferAttributes<Station>>('/', async (req, res) => {
     city,
     operator,
     capacity,
-    x,
-    y
+    latitude,
+    longitude
   });
 
   res.json(newStation);
@@ -100,8 +100,8 @@ router.post<{}, string[], Station[]>('/bulk', upload.single('file'), async (req,
       const city = data[7];
       const operator = data[9];
       const capacity = data[10];
-      const x = data[11];
-      const y = data[12];
+      const longitude = data[11];
+      const latitude = data[12];
 
       if (
         !(
@@ -111,8 +111,8 @@ router.post<{}, string[], Station[]>('/bulk', upload.single('file'), async (req,
           isString(city) &&
           isString(operator) &&
           isNumber(capacity) &&
-          isNumber(x) &&
-          isNumber(y)
+          isNumber(latitude) &&
+          isNumber(longitude)
         )
       ) {
         faultyRows.push(data.join(','));
@@ -126,14 +126,23 @@ router.post<{}, string[], Station[]>('/bulk', upload.single('file'), async (req,
         city,
         operator,
         capacity,
-        x,
-        y
+        latitude,
+        longitude
       });
 
       if (newStations.length === 20000) {
         parser.pause();
         await Station.bulkCreate(newStations, {
-          updateOnDuplicate: ['id', 'address', 'capacity', 'city', 'name', 'operator', 'x', 'y']
+          updateOnDuplicate: [
+            'id',
+            'address',
+            'capacity',
+            'city',
+            'name',
+            'operator',
+            'latitude',
+            'longitude'
+          ]
         });
         newStations.length = 0;
         parser.resume();
@@ -141,7 +150,16 @@ router.post<{}, string[], Station[]>('/bulk', upload.single('file'), async (req,
     },
     complete: async () => {
       await Station.bulkCreate(newStations, {
-        updateOnDuplicate: ['id', 'address', 'capacity', 'city', 'name', 'operator', 'x', 'y']
+        updateOnDuplicate: [
+          'id',
+          'address',
+          'capacity',
+          'city',
+          'name',
+          'operator',
+          'latitude',
+          'longitude'
+        ]
       });
       res.status(200).send(faultyRows);
     }

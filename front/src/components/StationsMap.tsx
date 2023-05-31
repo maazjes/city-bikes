@@ -33,12 +33,12 @@ const StationsMap = ({ stations }: { stations: Station[] }): JSX.Element => {
       >
         {stations.map(
           (station) =>
-            station.x &&
-            station.y && (
+            station.latitude &&
+            station.longitude && (
               <MarkerF
                 key={station.id}
                 onClick={(): void => onMarkerClick(station.id)}
-                position={{ lat: station.y, lng: station.x }}
+                position={{ lat: station.latitude, lng: station.longitude }}
               >
                 {visibleStations.includes(station.id) && (
                   <InfoWindowF position={center} key="infowindow">

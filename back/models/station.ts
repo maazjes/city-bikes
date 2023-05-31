@@ -14,9 +14,9 @@ class Station extends Model<InferAttributes<Station>, InferCreationAttributes<St
 
   declare operator?: string;
 
-  declare x?: number;
+  declare latitude?: number;
 
-  declare y?: number;
+  declare longitude?: number;
 }
 
 Station.init(
@@ -45,11 +45,11 @@ Station.init(
       type: DataTypes.STRING,
       allowNull: true
     },
-    x: {
+    latitude: {
       type: DataTypes.FLOAT,
       allowNull: true
     },
-    y: {
+    longitude: {
       type: DataTypes.FLOAT,
       allowNull: true
     }
