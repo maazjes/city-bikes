@@ -55,11 +55,17 @@ Journey.init(
     },
     distance: {
       type: DataTypes.FLOAT,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        min: 10
+      }
     },
     duration: {
       type: DataTypes.FLOAT,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        min: 10
+      }
     }
   },
   {

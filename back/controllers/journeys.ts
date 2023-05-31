@@ -102,7 +102,9 @@ router.post<{}, string[]>('/bulk', upload.single('file'), async (req, res) => {
           isNumber(departureStationId) &&
           isNumber(returnStationId) &&
           isNumber(distance) &&
-          isNumber(duration)
+          isNumber(duration) &&
+          parseFloat(distance) >= 10 &&
+          parseFloat(duration) >= 10
         )
       ) {
         faultyRows.push(data.join(','));

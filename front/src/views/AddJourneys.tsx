@@ -14,8 +14,8 @@ const validationSchema = yup.object().shape({
   returnTime: yup.date().required(),
   departureStationId: yup.number().required(),
   returnStationId: yup.number().required(),
-  distance: yup.number().required().min(0),
-  duration: yup.number().required().min(0)
+  distance: yup.number().required().min(10),
+  duration: yup.number().required().min(10)
 });
 
 const initialValues = {
