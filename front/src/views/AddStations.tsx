@@ -1,4 +1,4 @@
-import { Box, Button, Container, Grid, TextField, Typography } from '@mui/material';
+import { Box, Button, Container, Grid, Link, Typography } from '@mui/material';
 import { Formik } from 'formik';
 import { ChangeEvent, FormEvent, useState, useRef } from 'react';
 import FormikTextInput from 'src/components/FormikTextInput';
@@ -78,11 +78,9 @@ const AddStations = (): JSX.Element => {
     <Container
       maxWidth="xs"
       sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-evenly',
         minHeight: Math.max(window.innerHeight - appBarHeight, 900),
-        flex: 1
+        pt: 5,
+        pb: 5
       }}
     >
       <Grid
@@ -106,7 +104,7 @@ const AddStations = (): JSX.Element => {
             justifyContent="center"
           >
             <Grid item>
-              <Button variant="contained" component="label">
+              <Button variant="contained" component="label" id="select-file">
                 Select File
                 <input onChange={(e): void => onChange(e)} type="file" hidden />
               </Button>
@@ -121,7 +119,7 @@ const AddStations = (): JSX.Element => {
               </Grid>
             )}
             <Grid item>
-              <Button type="submit" variant="outlined">
+              <Button type="submit" variant="outlined" id="upload-file">
                 Upload
               </Button>
             </Grid>
@@ -160,20 +158,20 @@ const AddStations = (): JSX.Element => {
               handleSubmit();
             }}
             component="form"
-            sx={{ display: 'flex', flexDirection: 'column' }}
+            sx={{ display: 'flex', flexDirection: 'column', mt: 8 }}
           >
             <Typography mb={3} align="center" variant="h3">
               Add a single station
             </Typography>
-            <FormikTextInput required type="text" label="Id" name="id" />
-            <FormikTextInput required type="text" label="Name" name="name" />
-            <FormikTextInput type="text" label="Address" name="address" />
-            <FormikTextInput type="text" label="City" name="city" />
-            <FormikTextInput type="text" label="Operator" name="operator" />
-            <FormikTextInput type="text" label="Capacity" name="capacity" />
-            <FormikTextInput type="text" label="Latitude" name="latitude" />
-            <FormikTextInput type="text" label="Longitude" name="longitude" />
-            <Button size="large" type="submit" variant="contained">
+            <FormikTextInput required type="text" label="Id" name="id" id="id" />
+            <FormikTextInput required type="text" label="Name" name="name" id="name" />
+            <FormikTextInput type="text" label="Address" name="address" id="address" />
+            <FormikTextInput type="text" label="City" name="city" id="city" />
+            <FormikTextInput type="text" label="Operator" name="operator" id="operator" />
+            <FormikTextInput type="text" label="Capacity" name="capacity" id="capacity" />
+            <FormikTextInput type="text" label="Latitude" name="latitude" id="latitude" />
+            <FormikTextInput type="text" label="Longitude" name="longitude" id="longitude" />
+            <Button size="large" type="submit" variant="contained" id="add-station-button">
               Add
             </Button>
           </Box>
