@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClientProvider } from 'react-query';
 import { useEffect, useMemo, useState } from 'react';
 import { ThemeProvider } from '@mui/material';
@@ -40,23 +40,21 @@ const App = (): JSX.Element => {
             <ThemeProvider theme={theme}>
               <AppBar loggedIn={!!token} />
               <Routes>
-                <Route path="/">
-                  <Route path="journeys" element={<Journeys />} />
-                  <Route path="stations" element={<Stations />} />
-                  <Route path="stations/:id" element={<SingleStation />} />
-                  <Route path="login" element={<Login />} />
-                  {!token ? (
-                    <>
-                      <Route path="login" element={<Login />} />
-                      <Route path="register" element={<Register />} />
-                    </>
-                  ) : (
-                    <>
-                      <Route path="add-stations" element={<AddStations />} />
-                      <Route path="add-journeys" element={<AddJourneys />} />
-                    </>
-                  )}
-                </Route>
+                <Route path="journeys" element={<Journeys />} />
+                <Route path="stations" element={<Stations />} />
+                <Route path="stations/:id" element={<SingleStation />} />
+                {!token ? (
+                  <>
+                    <Route path="login" element={<Login />} />
+                    <Route path="register" element={<Register />} />
+                  </>
+                ) : (
+                  <>
+                    <Route path="add-stations" element={<AddStations />} />
+                    <Route path="add-journeys" element={<AddJourneys />} />
+                  </>
+                )}
+                <Route path="*" element={<Navigate to="stations" replace />} />
               </Routes>
             </ThemeProvider>
           </TokenContext.Provider>
