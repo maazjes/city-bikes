@@ -84,10 +84,12 @@ const Stations = (): JSX.Element => {
         data={filteredData || data}
         onFilterModelChange={onFilterModelChange}
         toolbarItemRight={mapViewCheckBox}
-        onItemDelete={(selected): Promise<void> => deleteStations(selected)}
-        queryKey="stations"
+        onItemDelete={(selected: number[]): Promise<void> => deleteStations(selected)}
+        queryKey="Stations"
       />
-      {mapViewOpen && <StationsMap stations={filteredData || data} />}
+      {mapViewOpen && (
+        <StationsMap stations={filteredData && filteredData.length > 0 ? filteredData : data} />
+      )}
     </Box>
   );
 };
