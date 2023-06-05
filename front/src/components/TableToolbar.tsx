@@ -17,8 +17,8 @@ const TableToolbar = ({
 }: TableToolbarProps): JSX.Element => (
   <Toolbar
     sx={{
-      pl: { sm: 2 },
-      pr: { xs: 1, sm: 1 },
+      pl: 1,
+      pr: 1,
       ...(selected.length > 0 && {
         bgcolor: (theme) => alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity)
       })
