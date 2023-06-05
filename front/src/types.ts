@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from 'react';
+
 export interface Error {
   error: string;
 }
@@ -14,11 +16,6 @@ export interface NewUser {
 export interface User {
   id: number;
   username: string;
-}
-
-export interface TokenContext {
-  token: string | null;
-  setToken: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export interface Station {
@@ -99,3 +96,8 @@ export type SortedFilteredQuery<T = never> = Partial<SortedQuery<T> & FilteredQu
 export type StationsQuery = Partial<FilteredQuery<Station> & SortedQuery<Station>>;
 
 export type SingleStationQuery = { after?: string; before?: string };
+
+export type LoggedInContext = {
+  loggedIn: boolean;
+  setLoggedIn: Dispatch<SetStateAction<boolean>>;
+};

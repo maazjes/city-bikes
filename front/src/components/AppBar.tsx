@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import {
   IconButton,
   Toolbar,
-  AppBar,
+  AppBar as MUIAppBar,
   Typography,
   CssBaseline,
   List,
@@ -13,13 +13,14 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useContext, useState } from 'react';
-import TokenContext from 'src/context/token';
 import MenuIcon from '@mui/icons-material/Menu';
+import { setAuthToken } from 'src/util/authToken';
+import LoggedInContext from 'src/context/loggedIn';
 
-const Header = ({ loggedIn }: { loggedIn: boolean }): JSX.Element => {
-  const { setToken } = useContext(TokenContext)!;
+const AppBar = (): JSX.Element => {
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { loggedIn, setLoggedIn } = useContext(LoggedInContext);
 
   const handleDrawerToggle = (): void => {
     setMobileOpen((prevState) => !prevState);
@@ -27,36 +28,42 @@ const Header = ({ loggedIn }: { loggedIn: boolean }): JSX.Element => {
 
   const onLogout = (): void => {
     localStorage.removeItem('token');
-    setToken(null);
+    setAuthToken('');
+    setLoggedIn(false);
     navigate('/');
   };
 
-  const navItems = [
-    { title: 'Home', onClick: () => navigate('/') },
-    { title: 'Stations', onClick: () => navigate('stations') },
-    { title: 'Journeys', onClick: () => navigate('journeys') },
+  const loggedInItems = [
     {
       title: 'Add stations',
       onClick: () => navigate('add-stations')
     },
     { title: 'Add journeys', onClick: () => navigate('add-journeys') },
     {
-      title: loggedIn ? 'Log out' : 'Log in',
-      onClick: loggedIn ? onLogout : (): void => navigate('login')
-    },
-    {
-      ...(!loggedIn && {
-        title: 'Register',
-        onClick: (): void => navigate('register')
-      })
+      title: 'Log out',
+      onClick: onLogout
     }
+  ];
+
+  const loggedOutItems = [
+    { title: 'Log in', onClick: (): void => navigate('login') },
+    {
+      title: 'Register',
+      onClick: (): void => navigate('register')
+    }
+  ];
+
+  const finalItems = [
+    { title: 'Stations', onClick: () => navigate('stations') },
+    { title: 'Journeys', onClick: () => navigate('journeys') },
+    ...(loggedIn ? loggedInItems : loggedOutItems)
   ];
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
       <List>
         <ListItem key="spacing" />
-        {navItems.map((item) => (
+        {finalItems.map((item) => (
           <ListItem key={item.title} disablePadding>
             <ListItemButton sx={{ textAlign: 'center' }} onClick={item.onClick}>
               <ListItemText primary={item.title} />
@@ -70,7 +77,7 @@ const Header = ({ loggedIn }: { loggedIn: boolean }): JSX.Element => {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar component="nav" sx={{ display: 'flex', justifyCOntent: 'space-between' }}>
+      <MUIAppBar component="nav" sx={{ display: 'flex', justifyCOntent: 'space-between' }}>
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <IconButton
             color="inherit"
@@ -88,7 +95,7 @@ const Header = ({ loggedIn }: { loggedIn: boolean }): JSX.Element => {
             <MenuIcon sx={{ height: 0 }} />
           </IconButton>
         </Toolbar>
-      </AppBar>
+      </MUIAppBar>
       <Toolbar />
       <Box component="nav">
         <Drawer
@@ -112,4 +119,4 @@ const Header = ({ loggedIn }: { loggedIn: boolean }): JSX.Element => {
   );
 };
 
-export default Header;
+export default AppBar;

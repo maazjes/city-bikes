@@ -2,11 +2,12 @@ import { Button, Container } from '@mui/material';
 import { useContext, useState } from 'react';
 import { login } from 'src/services/login';
 import { useNavigate } from 'react-router-dom';
-import TokenContext from 'src/context/token';
 import { Formik } from 'formik';
 import FormikTextInput from 'src/components/FormikTextInput';
 import * as yup from 'yup';
 import Notification from 'src/components/Notification';
+import { setAuthToken } from 'src/util/authToken';
+import LoggedInContext from 'src/context/loggedIn';
 
 const validationSchema = yup.object().shape({
   username: yup
@@ -27,16 +28,17 @@ const initialValues = {
 };
 
 const Login = (): JSX.Element => {
-  const { setToken } = useContext(TokenContext)!;
   const navigate = useNavigate();
   const [notification, setNotification] = useState({ text: '', error: false });
+  const { setLoggedIn } = useContext(LoggedInContext);
 
   const onSubmit = async (values: typeof initialValues): Promise<void> => {
     try {
       const { token } = await login(values);
+      setLoggedIn(true);
       localStorage.setItem('token', token);
-      setToken(token);
-      navigate('/');
+      setAuthToken(token);
+      navigate('/stations');
     } catch (error) {
       if (error instanceof Error) {
         setNotification({ error: true, text: error.message });
