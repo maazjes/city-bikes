@@ -19,8 +19,8 @@ const isNumber = (x: unknown): x is number => {
 
 const createWhere = (
   field: string,
-  value: string | number,
-  operator: Operator
+  operator: Operator,
+  value?: string | number
 ): WhereOptions | undefined => {
   const sequelizeOperator =
     operator === '!='
@@ -45,24 +45,36 @@ const createWhere = (
       ? Op.in
       : operator === 'startsWith'
       ? Op.iLike
+      : operator === 'isEmpty'
+      ? Op.eq
+      : operator === 'isNotEmpty'
+      ? Op.ne
       : undefined;
 
   if (!sequelizeOperator) {
     return undefined;
   }
 
-  let finalValue: string | number | string[] | number[] = value;
-  if (operator === 'startsWith') {
-    finalValue = `${value}%`;
-  }
-  if (operator === 'endsWith') {
-    finalValue = `%${value}`;
-  }
-  if (operator === 'contains') {
-    finalValue = `%${value}%`;
-  }
+  let finalValue: string | number | string[] | number[] | null | undefined = value;
   if (operator === 'isAnyOf' && isString(value)) {
     finalValue = value.split(',');
+  }
+  if (operator === 'isEmpty' || operator === 'isNotEmpty') {
+    finalValue = null;
+  }
+  if (value) {
+    if (operator === 'startsWith') {
+      finalValue = `${value}%`;
+    }
+    if (operator === 'endsWith') {
+      finalValue = `%${value}`;
+    }
+    if (operator === 'contains') {
+      finalValue = `%${value}%`;
+    }
+  }
+  if (finalValue === undefined) {
+    return undefined;
   }
 
   return { [field]: { [sequelizeOperator]: finalValue } };
