@@ -72,20 +72,17 @@ router.post<{}, string[]>('/bulk', requireAuth, upload.single('file'), async (re
   const existingStations = new Set();
   const stream = fs.createReadStream(req.file.path);
 
-  let firstLine = true;
-
   papa.parse<string[]>(stream, {
     delimiter: ',',
     newline: '\n',
     header: false,
     step: async ({ data }, parser) => {
-      if (firstLine) {
-        firstLine = false;
+      if (data.length !== 8) {
+        faultyRows.push(data.join(','));
         return;
       }
 
-      if (data.length !== 8) {
-        faultyRows.push(data.join(','));
+      if (data[0] === 'Departure') {
         return;
       }
 
