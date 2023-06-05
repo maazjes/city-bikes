@@ -82,20 +82,17 @@ router.post<{}, string[], Station[]>(
     const newStations: InferAttributes<Station>[] = [];
     const stream = fs.createReadStream(req.file.path);
 
-    let firstLine = true;
-
     papa.parse<string[]>(stream, {
       delimiter: ',',
       newline: '\n',
       header: false,
       step: async ({ data }, parser) => {
-        if (firstLine) {
-          firstLine = false;
+        if (data.length !== 13) {
+          faultyRows.push(data.join(','));
           return;
         }
 
-        if (data.length !== 13) {
-          faultyRows.push(data.join(','));
+        if (data[0] === 'FID') {
           return;
         }
 
