@@ -18,14 +18,16 @@ const columns: (Omit<GridColDef<Journey>, 'field'> & { field: keyof Journey })[]
     headerName: 'Departure time',
     flex: 1,
     align: 'center',
-    headerAlign: 'center'
+    headerAlign: 'center',
+    renderCell: ({ row }) => new Date(row.departureTime).toLocaleString()
   },
   {
     field: 'returnTime',
     headerName: 'Return time',
     flex: 1,
     align: 'center',
-    headerAlign: 'center'
+    headerAlign: 'center',
+    renderCell: ({ row }) => new Date(row.returnTime).toLocaleString()
   },
   {
     field: 'departureStationId',
