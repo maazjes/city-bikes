@@ -85,7 +85,7 @@ const AddStations = (): JSX.Element => {
           if (newProgress < 100) {
             setProgress(progress + newProgress);
           }
-        }, 2000);
+        }, 3000);
 
         const res = await mutateStationsCSV(file);
         setFaultyRows(res);
