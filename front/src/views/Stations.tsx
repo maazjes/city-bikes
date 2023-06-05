@@ -36,8 +36,24 @@ const columns: (Omit<GridColDef<Station>, 'field'> & { field: keyof Station })[]
     align: 'left',
     headerAlign: 'left'
   },
-  { field: 'latitude', headerName: 'Latitude', flex: 1, align: 'left', headerAlign: 'left' },
-  { field: 'longitude', headerName: 'Longitude', flex: 1, align: 'left', headerAlign: 'left' }
+  {
+    field: 'latitude',
+    headerName: 'Latitude',
+    type: 'number',
+    flex: 1,
+    align: 'left',
+    headerAlign: 'left',
+    renderCell: ({ row }) => row.latitude
+  },
+  {
+    field: 'longitude',
+    headerName: 'Longitude',
+    type: 'number',
+    flex: 1,
+    align: 'left',
+    headerAlign: 'left',
+    renderCell: ({ row }) => row.longitude
+  }
 ];
 
 const Stations = (): JSX.Element => {
