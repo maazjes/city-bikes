@@ -13,6 +13,10 @@ router.post<{}, User, NewUser>('/', async (req, res) => {
     throw new ApiError('Email and password are required', { status: 400 });
   }
 
+  if (password.length < 8) {
+    throw new ApiError('Password must be at least 8 characters long', { status: 400 });
+  }
+
   const hashedPassword = await hashPassword(password);
 
   const user = await User.create({ username, password: hashedPassword });
