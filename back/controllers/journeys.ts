@@ -142,7 +142,7 @@ router.post<{}, string[]>('/bulk', requireAuth, upload.single('file'), async (re
   });
 });
 
-router.delete<{}, {}, number[]>('/', async (req, res) => {
+router.delete<{}, {}, number[]>('/', requireAuth, async (req, res) => {
   await Journey.destroy({ where: { id: req.body } });
   res.json({});
 });

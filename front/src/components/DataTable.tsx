@@ -8,10 +8,11 @@ import {
   DataGridProps,
   GridFilterPanel
 } from '@mui/x-data-grid';
-import { useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { GetPaginatedSortedFilteredData, Operator, PaginatedSortedFilteredQuery } from 'src/types';
 import queryClient from 'src/util/queryClient';
+import LoggedInContext from 'src/context/loggedIn';
 import TableToolbar from './TableToolbar';
 import Alert from './Alert';
 
@@ -74,6 +75,7 @@ const DataTable = <T extends GridValidRowModel & { id: number }>({
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>();
   const [clientModeData, setClientModeData] = useState<T[]>(data || []);
   const [alertVisible, setAlertVisible] = useState(false);
+  const { loggedIn } = useContext(LoggedInContext);
 
   const initialQuery: PaginatedSortedFilteredQuery<T> = {
     sort: 'asc',
@@ -179,6 +181,13 @@ const DataTable = <T extends GridValidRowModel & { id: number }>({
     loading: isLoading
   };
 
+  const loggedInProps: Partial<DataGridProps> = {
+    checkboxSelection: true,
+    onRowSelectionModelChange: (model): void => {
+      setSelected(model as number[]);
+    }
+  };
+
   return (
     <>
       <TableToolbar
@@ -189,10 +198,6 @@ const DataTable = <T extends GridValidRowModel & { id: number }>({
       />
       <DataGrid
         autoHeight
-        checkboxSelection
-        onRowSelectionModelChange={(model): void => {
-          setSelected(model as number[]);
-        }}
         slots={{
           toolbar: GridFilterPanel,
           loadingOverlay: () => null,
@@ -211,6 +216,7 @@ const DataTable = <T extends GridValidRowModel & { id: number }>({
         initialState={initialState}
         pageSizeOptions={[10, 20, 30]}
         {...(!!getData && serverModeProps)}
+        {...(loggedIn && loggedInProps)}
       />
       <Alert
         visible={alertVisible}
