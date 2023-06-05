@@ -14,35 +14,35 @@ const columns: (Omit<GridColDef<Station>, 'field'> & { field: keyof Station })[]
     headerName: 'ID',
     type: 'number',
     flex: 1,
-    align: 'left',
-    headerAlign: 'left',
+    align: 'center',
+    headerAlign: 'center',
     renderCell: ({ row }) => <Link href={`stations/${row.id}`}>{row.id}</Link>
   },
-  { field: 'name', headerName: 'Name', flex: 1, align: 'left', headerAlign: 'left' },
-  { field: 'address', headerName: 'Address', flex: 1, align: 'left', headerAlign: 'left' },
+  { field: 'name', headerName: 'Name', flex: 1, align: 'center', headerAlign: 'center' },
+  { field: 'address', headerName: 'Address', flex: 1, align: 'center', headerAlign: 'center' },
   {
     field: 'city',
     headerName: 'City',
     flex: 1,
-    align: 'left',
-    headerAlign: 'left'
+    align: 'center',
+    headerAlign: 'center'
   },
-  { field: 'operator', headerName: 'Operator', flex: 1, align: 'left', headerAlign: 'left' },
+  { field: 'operator', headerName: 'Operator', flex: 1, align: 'center', headerAlign: 'center' },
   {
     field: 'capacity',
     headerName: 'Capacity',
     type: 'number',
     flex: 1,
-    align: 'left',
-    headerAlign: 'left'
+    align: 'center',
+    headerAlign: 'center'
   },
   {
     field: 'latitude',
     headerName: 'Latitude',
     type: 'number',
     flex: 1,
-    align: 'left',
-    headerAlign: 'left',
+    align: 'center',
+    headerAlign: 'center',
     renderCell: ({ row }) => row.latitude
   },
   {
@@ -50,8 +50,8 @@ const columns: (Omit<GridColDef<Station>, 'field'> & { field: keyof Station })[]
     headerName: 'Longitude',
     type: 'number',
     flex: 1,
-    align: 'left',
-    headerAlign: 'left',
+    align: 'center',
+    headerAlign: 'center',
     renderCell: ({ row }) => row.longitude
   }
 ];
