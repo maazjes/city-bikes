@@ -16,4 +16,4 @@ Journey.belongsTo(Station, { foreignKey: 'returnStationId', as: 'returnStation' 
 Station.hasMany(Journey, { foreignKey: 'departureStationId', as: 'journeysFrom' });
 Station.hasMany(Journey, { foreignKey: 'returnStationId', as: 'journeysTo' });
 
-export { Journey, Station };
+export { Journey, Station, User };
