@@ -56,10 +56,15 @@ const SingleStation = (): JSX.Element => {
           Total journeys to this station: {station.totalJourneysTo}
         </Typography>
         <Typography lineHeight={2.2} variant="body1">
-          Average distance of journey from this station: {station.averageDistanceFrom ?? 'null'}
+          Average distance of journey from this station:{' '}
+          {(station.averageDistanceFrom &&
+            `${(station.averageDistanceFrom / 1000).toFixed(2)} km`) ||
+            'null'}
         </Typography>
         <Typography lineHeight={2.2} variant="body1">
-          Average distance of journey to this station: {station.averageDistanceTo ?? 'null'}
+          Average distance of journey to this station:{' '}
+          {(station.averageDistanceTo && `${(station.averageDistanceTo / 1000).toFixed(2)} km`) ||
+            'null'}
         </Typography>
       </Box>
       <Box component="div" sx={{ mt: 3.5, mb: 5, pr: 3, pl: 3 }}>
