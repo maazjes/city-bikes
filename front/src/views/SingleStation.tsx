@@ -42,25 +42,27 @@ const SingleStation = (): JSX.Element => {
       disableGutters
       maxWidth={false}
     >
-      <Typography mb={3} textAlign="center" align="center" variant="h2">
-        {station.name}
-      </Typography>
-      <Typography lineHeight={2.2} variant="body1">
-        Address: {station.address ?? 'unknown'}
-      </Typography>
-      <Typography lineHeight={2.2} variant="body1">
-        Total journeys from this station: {station.totalJourneysFrom}
-      </Typography>
-      <Typography lineHeight={2.2} variant="body1">
-        Total journeys to this station: {station.totalJourneysTo}
-      </Typography>
-      <Typography lineHeight={2.2} variant="body1">
-        Average distance of journey from this station: {station.averageDistanceFrom ?? 'null'}
-      </Typography>
-      <Typography lineHeight={2.2} variant="body1">
-        Average distance of journey to this station: {station.averageDistanceTo ?? 'null'}
-      </Typography>
-      <Box component="div" sx={{ mt: 3.5, mb: 5 }}>
+      <Box sx={{ pl: 3, pr: 3 }}>
+        <Typography mb={3} textAlign="center" align="center" variant="h2">
+          {station.name}
+        </Typography>
+        <Typography lineHeight={2.2} variant="body1">
+          Address: {station.address ?? 'unknown'}
+        </Typography>
+        <Typography lineHeight={2.2} variant="body1">
+          Total journeys from this station: {station.totalJourneysFrom}
+        </Typography>
+        <Typography lineHeight={2.2} variant="body1">
+          Total journeys to this station: {station.totalJourneysTo}
+        </Typography>
+        <Typography lineHeight={2.2} variant="body1">
+          Average distance of journey from this station: {station.averageDistanceFrom ?? 'null'}
+        </Typography>
+        <Typography lineHeight={2.2} variant="body1">
+          Average distance of journey to this station: {station.averageDistanceTo ?? 'null'}
+        </Typography>
+      </Box>
+      <Box component="div" sx={{ mt: 3.5, mb: 5, pr: 3, pl: 3 }}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Grid
             spacing={2}
@@ -100,6 +102,8 @@ const SingleStation = (): JSX.Element => {
       <Grid
         mt={2}
         mb={4}
+        pl={3}
+        pr={3}
         spacing={4}
         container
         alignItems="space-evenly"

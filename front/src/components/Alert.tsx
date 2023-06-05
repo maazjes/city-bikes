@@ -1,17 +1,17 @@
-import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { Dispatch, MouseEventHandler } from 'react';
 
 interface AlertProps {
   title: string;
   content: string;
   visible: boolean;
-  setVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  handleYes: React.MouseEventHandler<HTMLButtonElement>;
+  setVisible: Dispatch<React.SetStateAction<boolean>>;
+  handleYes: MouseEventHandler<HTMLButtonElement>;
 }
 
 const Alert = ({ title, content, visible, setVisible, handleYes }: AlertProps): JSX.Element => {

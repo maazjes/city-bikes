@@ -3,7 +3,6 @@ import { Formik } from 'formik';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import FormikTextInput from 'src/components/FormikTextInput';
 import ProgressBar from 'src/components/ProgressBar';
-import useAppBarHeight from 'src/hooks/useAppBarHeight';
 import { countStations, createStation, createStationsFromCSV } from 'src/services/stations';
 import theme from 'src/theme';
 import { Station } from 'src/types';
@@ -41,7 +40,6 @@ const AddStations = (): JSX.Element => {
   const [progress, setProgress] = useState(0);
   const [notification, setNotification] = useState({ text: '', error: false });
   const [notification1, setNotification1] = useState({ text: '', error: false });
-  const appBarHeight = useAppBarHeight();
 
   const { mutateAsync: mutateStationsCSV } = useMutation<string[], unknown, File>(
     'createStationsFromCSV',
@@ -121,9 +119,8 @@ const AddStations = (): JSX.Element => {
     <Container
       maxWidth="xs"
       sx={{
-        minHeight: Math.max(window.innerHeight - appBarHeight, 900),
-        pt: 5,
-        pb: 5
+        pt: 7,
+        pb: 7
       }}
     >
       <Grid
@@ -206,7 +203,7 @@ const AddStations = (): JSX.Element => {
               handleSubmit();
             }}
             component="form"
-            sx={{ display: 'flex', flexDirection: 'column', mt: 8 }}
+            sx={{ display: 'flex', flexDirection: 'column', mt: 7 }}
           >
             <Typography mb={3} align="center" variant="h3">
               Add a single station

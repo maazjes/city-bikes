@@ -4,7 +4,6 @@ import { ChangeEvent, FormEvent, useState } from 'react';
 import FormikTextInput from 'src/components/FormikTextInput';
 import Notification from 'src/components/Notification';
 import ProgressBar from 'src/components/ProgressBar';
-import useAppBarHeight from 'src/hooks/useAppBarHeight';
 import { countJourneys, createJourney, createJourneysFromCSV } from 'src/services/journeys';
 import theme from 'src/theme';
 import { Journey } from 'src/types';
@@ -37,7 +36,6 @@ const AddJourneys = (): JSX.Element => {
   const [progress, setProgress] = useState(0);
   const [notification, setNotification] = useState({ text: '', error: false });
   const [notification1, setNotification1] = useState({ text: '', error: false });
-  const appBarHeight = useAppBarHeight();
 
   const { mutateAsync: mutateJourneysCSV } = useMutation<string[], unknown, File>(
     'createStationsFromCSV',
@@ -117,9 +115,8 @@ const AddJourneys = (): JSX.Element => {
     <Container
       maxWidth="xs"
       sx={{
-        minHeight: Math.max(window.innerHeight - appBarHeight, 760),
-        pt: 5,
-        pb: 5
+        pt: 7,
+        pb: 7
       }}
     >
       <Grid
@@ -185,7 +182,9 @@ const AddJourneys = (): JSX.Element => {
         {faultyRows.length > 0 && (
           <Grid item width="100%">
             <Link href={createTextFile(faultyRows.join('\n'))}>
-              <Typography variant="body1">Download faulty rows</Typography>
+              <Typography align="center" variant="body1">
+                Download faulty rows
+              </Typography>
             </Link>
           </Grid>
         )}
@@ -202,7 +201,7 @@ const AddJourneys = (): JSX.Element => {
               handleSubmit();
             }}
             component="form"
-            sx={{ display: 'flex', flexDirection: 'column', mt: 8 }}
+            sx={{ display: 'flex', flexDirection: 'column', mt: 7 }}
           >
             <Typography mb={3} align="center" variant="h3">
               Add a single journey

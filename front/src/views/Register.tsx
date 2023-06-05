@@ -68,6 +68,7 @@ const Register = (): JSX.Element => {
           </Button>
           <Notification
             error={notification.error}
+            sx={{ mt: 1.5 }}
             text={notification.text}
             visible={!!notification.text}
           />
