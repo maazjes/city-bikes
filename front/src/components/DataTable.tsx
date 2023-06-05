@@ -89,21 +89,19 @@ const DataTable = <T extends GridValidRowModel & { id: number }>({
 
   const { data: serverModeData, isLoading } = useQuery(
     finalQueryKey,
-    () => getData && getData(query),
+    () => (getData ? getData(query) : undefined),
     {
       enabled: !!getData
     }
   );
 
   const { mutate: deleteItems } = useMutation<unknown, unknown, number[]>(
-    `delete ${queryKey}`,
+    `Delete ${queryKey}`,
     (ids) => onItemDelete(ids),
     {
       onSuccess: () => {
         if (getData) {
-          queryClient.setQueryData<T[] | undefined>(finalQueryKey, (oldData) => [
-            ...oldData!.filter((item) => !selected.includes(item.id))
-          ]);
+          queryClient.refetchQueries(finalQueryKey);
         } else {
           setClientModeData([...clientModeData.filter((item) => !selected.includes(item.id))]);
         }
