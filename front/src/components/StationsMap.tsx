@@ -1,7 +1,7 @@
 import { GOOGLE_API_KEY } from 'src/util/config';
 import { GoogleMap, useLoadScript, MarkerF, InfoWindowF } from '@react-google-maps/api';
 import { useMemo, useState } from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Link, Typography } from '@mui/material';
 import { Station } from 'src/types';
 
 const StationsMap = ({ stations }: { stations: Station[] }): JSX.Element => {
@@ -43,7 +43,9 @@ const StationsMap = ({ stations }: { stations: Station[] }): JSX.Element => {
                 {visibleStations.includes(station.id) && (
                   <InfoWindowF position={center} key="infowindow">
                     <div>
-                      <Typography variant="body1">{station.name}</Typography>
+                      <Link href={`stations/${station.id}`}>
+                        <Typography variant="body1">{station.name}</Typography>
+                      </Link>
                       {station.address}
                     </div>
                   </InfoWindowF>
