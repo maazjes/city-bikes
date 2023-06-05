@@ -25,13 +25,8 @@ router.get<{}, Station[] | { rows: Station[]; count: number }, {}, StationsQuery
     let where: WhereOptions | undefined;
     let order: Order | undefined;
 
-    if (filterBy && value && operator) {
-      where = createWhere(
-        filterBy,
-        typeof parseInt(value) === 'number' ? value : Number(value),
-        operator
-      );
-      where = createWhere(filterBy, Number.isNaN(Number(value)) ? value : Number(value), operator);
+    if (filterBy && operator) {
+      where = createWhere(filterBy, operator, value);
     }
 
     if (sortBy && sort) {

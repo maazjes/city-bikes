@@ -23,12 +23,8 @@ router.get<{}, { rows: Journey[]; count: number }, {}, JourneysQuery>('/', async
   let where: WhereOptions | undefined;
   let order: Order | undefined;
 
-  if (filterBy && value && operator) {
-    where = createWhere(
-      filterBy,
-      typeof parseInt(value) === 'number' ? value : Number(value),
-      operator
-    );
+  if (filterBy && operator) {
+    where = createWhere(filterBy, operator, value);
   }
 
   if (sortBy && sort) {
