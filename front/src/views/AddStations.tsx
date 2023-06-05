@@ -24,14 +24,14 @@ const validationSchema = yup.object().shape({
 });
 
 const initialValues = {
-  id: undefined,
-  name: undefined,
-  address: undefined,
-  city: undefined,
-  operator: undefined,
-  capacity: undefined,
-  latitude: undefined,
-  longitude: undefined
+  id: '',
+  name: '',
+  address: '',
+  city: '',
+  operator: '',
+  capacity: '',
+  latitude: '',
+  longitude: ''
 } as unknown as Station;
 
 const AddStations = (): JSX.Element => {

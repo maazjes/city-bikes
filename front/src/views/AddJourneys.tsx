@@ -22,12 +22,12 @@ const validationSchema = yup.object().shape({
 });
 
 const initialValues = {
-  departureTime: undefined,
-  returnTime: undefined,
-  departureStationId: undefined,
-  returnStationId: undefined,
-  distance: undefined,
-  duration: undefined
+  departureTime: '',
+  returnTime: '',
+  departureStationId: '',
+  returnStationId: '',
+  distance: '',
+  duration: ''
 } as unknown as Journey;
 
 const AddJourneys = (): JSX.Element => {
