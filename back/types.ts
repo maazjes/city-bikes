@@ -42,7 +42,7 @@ export interface FilterQuery {
 }
 
 export interface StationFilterQuery extends FilterQuery {
-  filterBy: keyof InferAttributes<Station>;
+  filterBy: Extract<keyof InferAttributes<Station>, 'string'>;
 }
 
 export interface SortQuery {
@@ -51,7 +51,7 @@ export interface SortQuery {
 }
 
 export interface StationSortQuery extends SortQuery {
-  sortBy: keyof InferAttributes<Station>;
+  sortBy: Extract<keyof InferAttributes<Station>, 'string'>;
 }
 
 export type StationsQuery = Partial<PaginationQuery & StationFilterQuery & SortQuery>;
@@ -59,7 +59,7 @@ export type StationsQuery = Partial<PaginationQuery & StationFilterQuery & SortQ
 export type SingleStationQuery = StationsQuery & { after?: Date; before?: Date };
 
 export interface JourneyFilterQuery extends FilterQuery {
-  filterBy: keyof InferAttributes<Journey>;
+  filterBy: Extract<keyof InferAttributes<Journey>, 'string'>;
 }
 
 export type JourneysQuery = PaginationQuery & Partial<JourneyFilterQuery & SortQuery>;

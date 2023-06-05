@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
+    "target": "ES2021",
     "lib": [
       "dom",
       "dom.iterable",
-      "esnext"
+      "ES2021"
     ],
     "strict": true,
       "noImplicitAny": true,
@@ -18,8 +18,8 @@
       "alwaysStrict": true,
       "esModuleInterop": true,
       "declaration": true,
-      "outDir": "./build/",
-      "module": "ESNext",
+      "outDir": "../dist/public",
+      "module": "ES6",
       "moduleResolution": "node",
       "noEmit": false,
       "noEmitOnError": false,
@@ -30,6 +30,5 @@
       "jsx": "react-jsx",
       "baseUrl": "./"
   },
-  "include": ["./src", "./cypress"],
-    "exclude": ["node_modules"]
+  "include": ["./src"]
 }

@@ -9,7 +9,9 @@ node_modules
 /coverage
 
 # production
-/build
+dist
+build
+back/front/
 
 # misc
 .DS_Store
@@ -18,7 +20,7 @@ node_modules
 .env.test.local
 .env.production.local
 .env
-uploads
+back/uploads/
 
 npm-debug.log*
 yarn-debug.log*

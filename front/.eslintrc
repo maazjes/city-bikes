@@ -45,6 +45,7 @@
       "ecmaFeatures": {
         "jsx": true
       }
-    }
+    },
+    "root": true
   }
   

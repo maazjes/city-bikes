@@ -1,6 +1,6 @@
 {
     "plugins": ["import", "unused-imports", "prettier"],
-    "extends": ["airbnb", "airbnb-typescript", "prettier"],
+    "extends": ["airbnb-base", "airbnb-typescript/base", "prettier"],
     "rules": {
       "prettier/prettier": "error",
       "indent": "off",
@@ -22,9 +22,11 @@
       "import/extensions": ["error", "always"],
       "radix": "off"
     },
+    "ignorePatterns": ["**/*.js"],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
       "project": "./tsconfig.json"
-    }
+    },
+    "root": true
   }
   

@@ -1,0 +1,8 @@
+node_modules
+dist
+.env
+cypress
+stations.csv
+journeys.csv
+cypress.config.ts
+uploads
