@@ -162,12 +162,6 @@ const DataTable = <T extends GridValidRowModel & { id: number }>({
     [serverModeData, clientModeData]
   );
 
-  const rowCount = serverModeData
-    ? serverModeData.count
-    : clientModeData
-    ? clientModeData.length
-    : 0;
-
   const serverModeProps: Partial<DataGridProps> = {
     paginationMode: 'server',
     paginationModel,
@@ -178,7 +172,8 @@ const DataTable = <T extends GridValidRowModel & { id: number }>({
     filterMode: 'server',
     filterModel,
     onFilterModelChange: onFilterModelChanged,
-    loading: isLoading
+    loading: isLoading,
+    rowCount: serverModeData ? serverModeData.count : 0
   };
 
   const loggedInProps: Partial<DataGridProps> = {
@@ -211,7 +206,6 @@ const DataTable = <T extends GridValidRowModel & { id: number }>({
         paginationMode="client"
         sx={hide ? hideSX : undefined}
         rows={rows}
-        rowCount={rowCount}
         columns={columns}
         initialState={initialState}
         pageSizeOptions={[10, 20, 30]}
