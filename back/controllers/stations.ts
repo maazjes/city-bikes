@@ -3,6 +3,7 @@ import multer from 'multer';
 import fs from 'fs';
 import papa from 'papaparse';
 import { InferAttributes, Order, WhereOptions, col, fn, Op } from 'sequelize';
+import { requireAuth } from 'util/middleware.js';
 import { isString, createWhere, isNumber } from '../util/helpers.js';
 import { SingleStation, SingleStationQuery, StationsQuery } from '../types.js';
 import ApiError from '../classes/ApiError.js';
@@ -52,7 +53,7 @@ router.get<{}, Station[] | { rows: Station[]; count: number }, {}, StationsQuery
   }
 );
 
-router.post<{}, Station, InferAttributes<Station>>('/', async (req, res) => {
+router.post<{}, Station, InferAttributes<Station>>('/', requireAuth, async (req, res) => {
   const { id, name, address, city, operator, capacity, latitude, longitude } = req.body;
 
   const newStation = await Station.create({
@@ -69,69 +70,90 @@ router.post<{}, Station, InferAttributes<Station>>('/', async (req, res) => {
   res.json(newStation);
 });
 
-router.post<{}, string[], Station[]>('/bulk', upload.single('file'), async (req, res) => {
-  if (!req.file) {
-    throw new ApiError('File missing from request', { status: 400 });
-  }
-  const faultyRows: string[] = [];
-  const newStations: InferAttributes<Station>[] = [];
-  const stream = fs.createReadStream(req.file.path);
+router.post<{}, string[], Station[]>(
+  '/bulk',
+  requireAuth,
+  upload.single('file'),
+  async (req, res) => {
+    if (!req.file) {
+      throw new ApiError('File missing from request', { status: 400 });
+    }
+    const faultyRows: string[] = [];
+    const newStations: InferAttributes<Station>[] = [];
+    const stream = fs.createReadStream(req.file.path);
 
-  let firstLine = true;
+    let firstLine = true;
 
-  papa.parse<string[]>(stream, {
-    delimiter: ',',
-    newline: '\n',
-    header: false,
-    step: async ({ data }, parser) => {
-      if (firstLine) {
-        firstLine = false;
-        return;
-      }
+    papa.parse<string[]>(stream, {
+      delimiter: ',',
+      newline: '\n',
+      header: false,
+      step: async ({ data }, parser) => {
+        if (firstLine) {
+          firstLine = false;
+          return;
+        }
 
-      if (data.length !== 13) {
-        faultyRows.push(data.join(','));
-        return;
-      }
+        if (data.length !== 13) {
+          faultyRows.push(data.join(','));
+          return;
+        }
 
-      const id = data[1];
-      const name = data[2];
-      const address = data[5];
-      const city = data[7];
-      const operator = data[9];
-      const capacity = data[10];
-      const longitude = data[11];
-      const latitude = data[12];
+        const id = data[1];
+        const name = data[2];
+        const address = data[5];
+        const city = data[7];
+        const operator = data[9];
+        const capacity = data[10];
+        const longitude = data[11];
+        const latitude = data[12];
 
-      if (
-        !(
-          isNumber(id) &&
-          isString(name) &&
-          isString(address) &&
-          isString(city) &&
-          isString(operator) &&
-          isNumber(capacity) &&
-          isNumber(latitude) &&
-          isNumber(longitude)
-        )
-      ) {
-        faultyRows.push(data.join(','));
-        return;
-      }
+        if (
+          !(
+            isNumber(id) &&
+            isString(name) &&
+            isString(address) &&
+            isString(city) &&
+            isString(operator) &&
+            isNumber(capacity) &&
+            isNumber(latitude) &&
+            isNumber(longitude)
+          )
+        ) {
+          faultyRows.push(data.join(','));
+          return;
+        }
 
-      newStations.push({
-        id,
-        name,
-        address,
-        city,
-        operator,
-        capacity,
-        latitude,
-        longitude
-      });
+        newStations.push({
+          id,
+          name,
+          address,
+          city,
+          operator,
+          capacity,
+          latitude,
+          longitude
+        });
 
-      if (newStations.length === 20000) {
-        parser.pause();
+        if (newStations.length === 20000) {
+          parser.pause();
+          await Station.bulkCreate(newStations, {
+            updateOnDuplicate: [
+              'id',
+              'address',
+              'capacity',
+              'city',
+              'name',
+              'operator',
+              'latitude',
+              'longitude'
+            ]
+          });
+          newStations.length = 0;
+          parser.resume();
+        }
+      },
+      complete: async () => {
         await Station.bulkCreate(newStations, {
           updateOnDuplicate: [
             'id',
@@ -144,27 +166,11 @@ router.post<{}, string[], Station[]>('/bulk', upload.single('file'), async (req,
             'longitude'
           ]
         });
-        newStations.length = 0;
-        parser.resume();
+        res.status(200).send(faultyRows);
       }
-    },
-    complete: async () => {
-      await Station.bulkCreate(newStations, {
-        updateOnDuplicate: [
-          'id',
-          'address',
-          'capacity',
-          'city',
-          'name',
-          'operator',
-          'latitude',
-          'longitude'
-        ]
-      });
-      res.status(200).send(faultyRows);
-    }
-  });
-});
+    });
+  }
+);
 
 router.get<{ id: string }, SingleStation, {}, SingleStationQuery>('/:id', async (req, res) => {
   const { id } = req.params;
