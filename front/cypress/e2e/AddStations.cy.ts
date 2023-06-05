@@ -4,12 +4,16 @@ describe('Add stations view', () => {
     cy.get('#username').type('testtest', { force: true });
     cy.get('#password').type('testtest', { force: true });
     cy.get('#login-button').click({ force: true });
-    cy.request('http://localhost:8080/api/resettests');
+    cy.request('http://localhost:8080/api/tests/start');
+  });
+
+  afterEach(() => {
+    cy.request('http://localhost:8080/api/tests/end');
   });
 
   it('single station form adds a new station', () => {
     cy.visit('http://localhost:3000/add-stations');
-    cy.get('#id').type('9999', { force: true });
+    cy.get('#id').type('-5', { force: true });
     cy.get('#name').type('test', { force: true });
     cy.get('#address').type('test', { force: true });
     cy.get('#city').type('test', { force: true });
@@ -17,9 +21,9 @@ describe('Add stations view', () => {
     cy.get('#capacity').type('20', { force: true });
     cy.get('#latitude').type('20', { force: true });
     cy.get('#longitude').type('20', { force: true });
-    cy.get('#add-station-button').click({ force: true });
+    cy.get('#add-station').click({ force: true });
     cy.visit('http://localhost:3000/stations');
-    cy.get('#\\:rb\\:').type('9999', { force: true });
+    cy.get('#\\:rb\\:').type('-5', { force: true });
     cy.contains('test');
   });
 
@@ -36,8 +40,9 @@ describe('Add stations view', () => {
       )
     );
     cy.get('#upload-file').click({ force: true });
+    cy.wait(1000);
     cy.visit('http://localhost:3000/stations');
-    cy.get('#\\:rb\\:').type('2001', { force: true });
+    cy.get('#\\:rb\\:').type('-3', { force: true });
     cy.contains('test1');
   });
 });

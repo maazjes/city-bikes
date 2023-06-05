@@ -8,7 +8,7 @@ import login from './controllers/login.js';
 import users from './controllers/users.js';
 import stations from './controllers/stations.js';
 import journeys from './controllers/journeys.js';
-import resetTests from './controllers/resetTests.js';
+import tests from './controllers/tests.js';
 import { errorHandler } from './util/middleware.js';
 
 const app = express();
@@ -24,7 +24,7 @@ app.use('/api/stations', stations);
 app.use('/api/journeys', journeys);
 
 if (NODE_ENV === 'test') {
-  app.use('/api/resetTests', resetTests);
+  app.use('/api/tests', tests);
 }
 
 app.use(errorHandler);

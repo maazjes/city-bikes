@@ -192,7 +192,7 @@ const AddStations = (): JSX.Element => {
             <FormikTextInput type="text" label="Capacity" name="capacity" id="capacity" />
             <FormikTextInput type="text" label="Latitude" name="latitude" id="latitude" />
             <FormikTextInput type="text" label="Longitude" name="longitude" id="longitude" />
-            <Button size="large" type="submit" variant="contained" id="add-station-button">
+            <Button size="large" type="submit" variant="contained" id="add-station">
               Add
             </Button>
             <Notification

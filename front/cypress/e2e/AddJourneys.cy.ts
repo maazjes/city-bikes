@@ -4,22 +4,25 @@ describe('Add journeys view', () => {
     cy.get('#username').type('testtest', { force: true });
     cy.get('#password').type('testtest', { force: true });
     cy.get('#login-button').click({ force: true });
-    cy.request('http://localhost:8080/api/resettests');
-    cy.request('POST', 'http://localhost:8080/api/stations', { id: 9999, name: 'test' });
+    cy.request('http://localhost:8080/api/tests/start');
+  });
+
+  afterEach(() => {
+    cy.request('http://localhost:8080/api/tests/end');
   });
 
   it('single journey form adds a new journey', () => {
     cy.visit('http://localhost:3000/add-journeys');
     cy.get('#departureTime').type('2011-10-05T14:48:00.000Z', { force: true });
     cy.get('#returnTime').type('2011-10-05T14:48:00.000Z', { force: true });
-    cy.get('#departureStationId').type('9999', { force: true });
-    cy.get('#returnStationId').type('9999', { force: true });
+    cy.get('#departureStationId').type('-1', { force: true });
+    cy.get('#returnStationId').type('-1', { force: true });
     cy.get('#distance').type('20', { force: true });
     cy.get('#duration').type('20', { force: true });
-    cy.get('#add-journeys-button').click({ force: true });
+    cy.get('#add-journey').click({ force: true });
     cy.visit('http://localhost:3000/journeys');
     cy.get('#\\:r6\\:').select('departureStationId', { force: true });
-    cy.get('#\\:rb\\:').type('9999', { force: true });
+    cy.get('#\\:rb\\:').type('-1', { force: true });
     cy.contains('2011-10-05T14:48:00.000Z');
   });
 
@@ -36,9 +39,10 @@ describe('Add journeys view', () => {
       )
     );
     cy.get('#upload-file').click({ force: true });
+    cy.wait(2000);
     cy.visit('http://localhost:3000/journeys');
     cy.get('#\\:r6\\:').select('departureStationId', { force: true });
-    cy.get('#\\:rb\\:').type('9999', { force: true });
+    cy.get('#\\:rb\\:').type('-1', { force: true });
     cy.contains('8,888');
   });
 });
