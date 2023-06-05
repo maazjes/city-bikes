@@ -211,7 +211,7 @@ const AddJourneys = (): JSX.Element => {
             />
             <FormikTextInput required type="text" label="Distance" name="distance" id="distance" />
             <FormikTextInput required type="text" label="Duration" name="duration" id="duration" />
-            <Button size="large" type="submit" variant="contained" id="add-journeys-button">
+            <Button size="large" type="submit" variant="contained" id="add-journey">
               Add
             </Button>
             <Notification
