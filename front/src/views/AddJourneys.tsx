@@ -1,6 +1,6 @@
 import { Box, Button, Container, Grid, Link, Typography } from '@mui/material';
 import { Formik } from 'formik';
-import { ChangeEvent, FormEvent, useState, useRef } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import FormikTextInput from 'src/components/FormikTextInput';
 import Notification from 'src/components/Notification';
 import ProgressBar from 'src/components/ProgressBar';
@@ -10,6 +10,8 @@ import theme from 'src/theme';
 import { Journey } from 'src/types';
 import { createTextFile } from 'src/util/helpers';
 import * as yup from 'yup';
+import { useMutation } from 'react-query';
+import queryClient from 'src/util/queryClient';
 
 const validationSchema = yup.object().shape({
   departureTime: yup.date().required(),
@@ -35,12 +37,30 @@ const AddJourneys = (): JSX.Element => {
   const [progress, setProgress] = useState(0);
   const [notification, setNotification] = useState({ text: '', error: false });
   const [notification1, setNotification1] = useState({ text: '', error: false });
-  const estimatedRows = useRef<number>();
   const appBarHeight = useAppBarHeight();
+
+  const { mutateAsync: mutateJourneysCSV } = useMutation<string[], unknown, File>(
+    'createStationsFromCSV',
+    (journeys) => createJourneysFromCSV(journeys),
+    {
+      onSuccess: () => {
+        queryClient.refetchQueries({ queryKey: ['PaginatedJourneys'], exact: false });
+      }
+    }
+  );
+
+  const { mutateAsync: mutateJourney } = useMutation<unknown, unknown, Omit<Journey, 'id'>>(
+    'createStation',
+    (journey) => createJourney(journey),
+    {
+      onSuccess: () => {
+        queryClient.refetchQueries({ queryKey: ['PaginatedJourneys'], exact: false });
+      }
+    }
+  );
 
   const onChange = (e: ChangeEvent<HTMLInputElement>): void => {
     if (e.target.files) {
-      estimatedRows.current = e.target.files[0].size / 88;
       setProgress(0);
       setFaultyRows([]);
       setFile(e.target.files[0]);
@@ -51,25 +71,31 @@ const AddJourneys = (): JSX.Element => {
     e.preventDefault();
 
     if (file) {
-      const timer = setInterval(async () => {
-        const { count } = await countJourneys();
-        const newProgress = (count / estimatedRows.current!) * 100;
-        if (newProgress < 100) {
-          setProgress(progress + newProgress);
-        }
-      }, 2000);
+      let timer;
 
       try {
-        const res = await createJourneysFromCSV(file);
+        const { count: initialCount } = await countJourneys();
+        const estimatedRows = file.size / 88;
+
+        timer = setInterval(async () => {
+          const { count } = await countJourneys();
+          const newProgress = ((count - initialCount) / estimatedRows) * 100;
+          if (newProgress < 100) {
+            setProgress(progress + newProgress);
+          }
+        }, 2000);
+
+        const res = await mutateJourneysCSV(file);
         setFaultyRows(res);
+
+        if (progress < 100) {
+          setProgress(100);
+        }
       } catch (error) {
+        setProgress(0);
         if (error instanceof Error) {
           setNotification1({ error: true, text: error.message });
         }
-      }
-
-      if (progress < 100) {
-        setProgress(100);
       }
 
       clearInterval(timer);
@@ -78,7 +104,7 @@ const AddJourneys = (): JSX.Element => {
 
   const onSingleSubmit = async (values: Omit<Journey, 'id'>): Promise<void> => {
     try {
-      await createJourney(values);
+      await mutateJourney(values);
       setNotification({ error: false, text: 'Successfully created a new journey!' });
     } catch (error) {
       if (error instanceof Error) {
