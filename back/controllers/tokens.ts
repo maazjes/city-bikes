@@ -24,7 +24,7 @@ router.post<{}, { token: string }, { token: string }>('/refreshtoken', async (re
     });
     return res.json({ token: newToken });
   } catch {
-    throw new ApiError('Invalid token');
+    throw new ApiError('Invalid token.');
   }
 });
 

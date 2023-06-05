@@ -14,7 +14,7 @@ router.post<{}, Token, NewUser>('/', async (req, res) => {
   const user = await User.findOne({ where: { username } });
 
   if (!user || !bcrypt.compare(user.password, password)) {
-    throw new ApiError('Invalid credentials', { status: 400 });
+    throw new ApiError('Invalid credentials.', { status: 400 });
   }
 
   const token = jwt.sign({ id: user.id, username }, SECRET, {
