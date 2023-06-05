@@ -3,7 +3,7 @@ import multer from 'multer';
 import fs from 'fs';
 import papa from 'papaparse';
 import { InferAttributes, Order, WhereOptions } from 'sequelize';
-import { requireAuth } from 'util/middleware.js';
+import { requireAuth } from '../util/middleware.js';
 import { JourneysQuery } from '../types.js';
 import ApiError from '../classes/ApiError.js';
 import { Journey, Station } from '../models/index.js';
@@ -63,7 +63,7 @@ router.post<{}, Journey, InferAttributes<Journey>>('/', requireAuth, async (req,
 
 router.post<{}, string[]>('/bulk', requireAuth, upload.single('file'), async (req, res) => {
   if (!req.file) {
-    throw new ApiError('File missing from request', { status: 400 });
+    throw new ApiError('File missing from request.', { status: 400 });
   }
 
   const faultyRows: string[] = [];
@@ -140,6 +140,7 @@ router.post<{}, string[]>('/bulk', requireAuth, upload.single('file'), async (re
     complete: async () => {
       await Station.bulkCreate(newStations, { ignoreDuplicates: true });
       await Journey.bulkCreate(newJourneys, { ignoreDuplicates: true });
+      fs.unlinkSync(req.file!.path);
       res.status(200).send(faultyRows);
     }
   });
