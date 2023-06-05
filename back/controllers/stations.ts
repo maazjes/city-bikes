@@ -3,7 +3,7 @@ import multer from 'multer';
 import fs from 'fs';
 import papa from 'papaparse';
 import { InferAttributes, Order, WhereOptions, col, fn, Op } from 'sequelize';
-import { requireAuth } from 'util/middleware.js';
+import { requireAuth } from '../util/middleware.js';
 import { isString, createWhere, isNumber } from '../util/helpers.js';
 import { SingleStation, SingleStationQuery, StationsQuery } from '../types.js';
 import ApiError from '../classes/ApiError.js';
@@ -76,7 +76,7 @@ router.post<{}, string[], Station[]>(
   upload.single('file'),
   async (req, res) => {
     if (!req.file) {
-      throw new ApiError('File missing from request', { status: 400 });
+      throw new ApiError('File missing from request.', { status: 400 });
     }
     const faultyRows: string[] = [];
     const newStations: InferAttributes<Station>[] = [];
@@ -163,6 +163,7 @@ router.post<{}, string[], Station[]>(
             'longitude'
           ]
         });
+        fs.unlinkSync(req.file!.path);
         res.status(200).send(faultyRows);
       }
     });
@@ -191,7 +192,7 @@ router.get<{ id: string }, SingleStation, {}, SingleStationQuery>('/:id', async 
   }
 
   if (!station) {
-    throw new ApiError('Station not found', { status: 400 });
+    throw new ApiError('Station not found.', { status: 400 });
   }
 
   const [
