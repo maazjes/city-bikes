@@ -8,6 +8,7 @@ import login from './controllers/login.js';
 import users from './controllers/users.js';
 import stations from './controllers/stations.js';
 import journeys from './controllers/journeys.js';
+import tokens from './controllers/tokens.js';
 import tests from './controllers/tests.js';
 import { errorHandler } from './util/middleware.js';
 
@@ -22,6 +23,7 @@ app.use('/api/login', login);
 app.use('/api/users', users);
 app.use('/api/stations', stations);
 app.use('/api/journeys', journeys);
+app.use('/api/tokens', tokens);
 
 if (NODE_ENV === 'test') {
   app.use('/api/tests', tests);

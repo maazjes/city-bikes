@@ -1,11 +1,9 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClientProvider } from 'react-query';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ThemeProvider } from '@mui/material';
 import Login from './views/Login';
 import Register from './views/Register';
-import TokenContext from './context/token';
-import { TokenContext as TokenContextType } from './types';
 import AppBar from './components/AppBar';
 import theme from './theme';
 import Journeys from './views/Journeys';
@@ -14,50 +12,88 @@ import SingleStation from './views/SingleStation';
 import AddStations from './views/AddStations';
 import AddJourneys from './views/AddJourneys';
 import queryClient from './util/queryClient';
+import { setAuthToken } from './util/authToken';
+import { LoggedInContext as LoggedInContextType } from './types';
+import LoggedInContext from './context/loggedIn';
+import { refreshToken, verifyToken } from './services/tokens';
 
 const App = (): JSX.Element => {
-  const [token, setToken] = useState<string | null>(null);
-  const tokenContext = useMemo(
-    (): TokenContextType => ({
-      token,
-      setToken
+  const [loggedIn, setLoggedIn] = useState(false);
+  const timer = useRef<NodeJS.Timer>();
+
+  const loggedInContext = useMemo(
+    (): LoggedInContextType => ({
+      loggedIn,
+      setLoggedIn
     }),
-    [token, setToken]
+    [loggedIn, setLoggedIn]
   );
 
   useEffect(() => {
-    const freshToken = localStorage.getItem('token');
-    if (freshToken) {
-      setToken(freshToken);
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      return;
     }
+
+    const initialize = async (): Promise<void> => {
+      try {
+        const { valid } = await verifyToken({ token });
+        if (valid) {
+          setLoggedIn(true);
+          setAuthToken(token);
+        }
+      } catch {}
+    };
+    initialize();
   }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    if (!timer.current && loggedIn && token) {
+      timer.current = setInterval(async () => {
+        try {
+          const { token: newToken } = await refreshToken({ token });
+          setAuthToken(newToken);
+        } catch {
+          setLoggedIn(false);
+          setAuthToken('');
+        }
+      }, 7180000);
+    }
+
+    return () => clearInterval(timer.current);
+  }, [loggedIn]);
 
   return (
     <QueryClientProvider client={queryClient}>
       <div className="App">
         <BrowserRouter>
-          <TokenContext.Provider value={tokenContext}>
+          <LoggedInContext.Provider value={loggedInContext}>
             <ThemeProvider theme={theme}>
-              <AppBar loggedIn={!!token} />
-              <Routes>
-                <Route path="journeys" element={<Journeys />} />
-                <Route path="stations" element={<Stations />} />
-                <Route path="stations/:id" element={<SingleStation />} />
-                {!token ? (
-                  <>
-                    <Route path="login" element={<Login />} />
-                    <Route path="register" element={<Register />} />
-                  </>
-                ) : (
-                  <>
-                    <Route path="add-stations" element={<AddStations />} />
-                    <Route path="add-journeys" element={<AddJourneys />} />
-                  </>
-                )}
-                <Route path="*" element={<Navigate to="stations" replace />} />
-              </Routes>
+              <AppBar />
+              {!loggedIn ? (
+                <Routes>
+                  <Route path="journeys" element={<Journeys />} />
+                  <Route path="stations" element={<Stations />} />
+                  <Route path="stations/:id" element={<SingleStation />} />
+                  <Route path="login" element={<Login />} />
+                  <Route path="register" element={<Register />} />
+                  <Route index element={<Stations />} />
+                </Routes>
+              ) : (
+                <Routes>
+                  <Route path="journeys" element={<Journeys />} />
+                  <Route path="stations" element={<Stations />} />
+                  <Route path="stations/:id" element={<SingleStation />} />
+                  <Route path="add-stations" element={<AddStations />} />
+                  <Route path="add-journeys" element={<AddJourneys />} />
+                  <Route index element={<Stations />} />
+                </Routes>
+              )}
             </ThemeProvider>
-          </TokenContext.Provider>
+          </LoggedInContext.Provider>
         </BrowserRouter>
       </div>
     </QueryClientProvider>
