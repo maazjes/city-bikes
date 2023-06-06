@@ -5,6 +5,7 @@ import FormikTextInput from 'src/components/FormikTextInput';
 import { createUser } from 'src/services/users';
 import * as yup from 'yup';
 import Notification from 'src/components/Notification';
+import useAppBarHeight from 'src/hooks/useAppBarHeight';
 
 const validationSchema = yup.object().shape({
   username: yup
@@ -31,6 +32,7 @@ const initialValues = {
 
 const Register = (): JSX.Element => {
   const [notification, setNotification] = useState({ text: '', error: false });
+  const appBarHeight = useAppBarHeight();
 
   const onSubmit = async ({ username, password }: typeof initialValues): Promise<void> => {
     try {
@@ -53,7 +55,13 @@ const Register = (): JSX.Element => {
           }}
           component="form"
           maxWidth="xs"
-          sx={{ display: 'flex', flexDirection: 'column', marginTop: '10%' }}
+          sx={{
+            display: 'flex',
+            height: window.innerHeight - appBarHeight,
+            pb: `${appBarHeight}px`,
+            flexDirection: 'column',
+            justifyContent: 'center'
+          }}
         >
           <FormikTextInput required type="text" label="Username" name="username" />
           <FormikTextInput required type="password" label="Password" name="password" />
