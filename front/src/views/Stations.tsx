@@ -65,6 +65,7 @@ const Stations = (): JSX.Element => {
     if (!data) {
       return;
     }
+
     const filterBy = model.items[0].field as keyof Station;
     const operator = model.items[0].operator as Operator;
     const value = model.items[0].value as string;
@@ -83,29 +84,26 @@ const Stations = (): JSX.Element => {
   const mapViewCheckBox = (
     <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
       <Typography variant="body1">Map view</Typography>
-      <Checkbox onChange={(): void => setMapViewOpen(!mapViewOpen)} />
+      <Checkbox sx={{ pr: 0 }} onChange={(): void => setMapViewOpen(!mapViewOpen)} />
     </div>
   );
 
-  if (!data || isLoading) {
-    return <div />;
-  }
+  const rows = filteredData || data || [];
 
   return (
     <Box pt={2} pl={3} pr={3} pb={3}>
       <DataTable<Station>
+        loading={isLoading}
         hide={mapViewOpen}
         title="Stations"
         columns={columns}
-        data={filteredData || data}
+        data={rows}
         onFilterModelChange={onFilterModelChange}
         toolbarItemRight={mapViewCheckBox}
         onItemDelete={(selected: number[]): Promise<void> => deleteStations(selected)}
         queryKey="Stations"
       />
-      {mapViewOpen && (
-        <StationsMap stations={filteredData && filteredData.length > 0 ? filteredData : data} />
-      )}
+      {mapViewOpen && <StationsMap stations={rows} />}
     </Box>
   );
 };
