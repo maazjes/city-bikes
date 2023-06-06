@@ -120,7 +120,7 @@ const SingleStation = (): JSX.Element => {
         alignItems="space-evenly"
         justifyContent="space-evenly"
       >
-        <Grid item direction="column" spacing={10}>
+        <Grid item>
           <Typography mb={1.5} variant="h3">
             Top return stations from this station
           </Typography>
@@ -135,7 +135,7 @@ const SingleStation = (): JSX.Element => {
             ))}
           </List>
         </Grid>
-        <Grid item direction="column">
+        <Grid item>
           <Typography mb={1.5} variant="h3">
             Top departure stations from this station
           </Typography>
