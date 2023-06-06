@@ -42,7 +42,7 @@ const SingleStation = (): JSX.Element => {
       disableGutters
       maxWidth={false}
     >
-      <Box sx={{ pl: 3, pr: 3 }}>
+      <Box pl={{ xs: 2, sm: 2.5, md: 3 }} pr={{ xs: 2, sm: 2.5, md: 3 }}>
         <Typography mb={3} textAlign="center" align="center" variant="h2">
           {station.name}
         </Typography>
@@ -67,7 +67,13 @@ const SingleStation = (): JSX.Element => {
             'null'}
         </Typography>
       </Box>
-      <Box component="div" sx={{ mt: 3.5, mb: 5, pr: 3, pl: 3 }}>
+      <Box
+        component="div"
+        pl={{ xs: 2, sm: 2.5, md: 3 }}
+        pr={{ xs: 2, sm: 2.5, md: 3 }}
+        mt={2.8}
+        mb={4}
+      >
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Grid
             spacing={2}
@@ -105,10 +111,10 @@ const SingleStation = (): JSX.Element => {
         </GoogleMap>
       )}
       <Grid
+        pl={{ xs: 2, sm: 2.5, md: 3 }}
+        pr={{ xs: 2, sm: 2.5, md: 3 }}
         mt={2}
         mb={4}
-        pl={3}
-        pr={3}
         spacing={4}
         container
         alignItems="space-evenly"

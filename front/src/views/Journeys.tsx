@@ -64,7 +64,12 @@ const columns: (Omit<GridColDef<Journey>, 'field'> & { field: keyof Journey })[]
 ];
 
 const Journeys = (): JSX.Element => (
-  <Box pt={2} pl={3} pr={3} pb={3}>
+  <Box
+    pt={2}
+    pl={{ xs: 2, sm: 2.5, md: 3 }}
+    pr={{ xs: 2, sm: 2.5, md: 3 }}
+    pb={{ xs: 2, sm: 2.5, md: 3 }}
+  >
     <DataTable<Journey>
       title="Journeys"
       columns={columns}

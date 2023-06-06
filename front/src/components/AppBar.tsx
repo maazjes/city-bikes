@@ -108,7 +108,7 @@ const AppBar = (): JSX.Element => {
           sx={{
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
-              width: { xs: '60%', sm: '25%' }
+              width: { xs: '60%', sm: 350, md: 400, xl: '25%' }
             }
           }}
         >
