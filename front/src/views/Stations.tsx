@@ -91,7 +91,12 @@ const Stations = (): JSX.Element => {
   const rows = filteredData || data || [];
 
   return (
-    <Box pt={2} pl={3} pr={3} pb={3}>
+    <Box
+      pt={2}
+      pl={{ xs: 2, sm: 2.5, md: 3 }}
+      pr={{ xs: 2, sm: 2.5, md: 3 }}
+      pb={{ xs: 2, sm: 2.5, md: 3 }}
+    >
       <DataTable<Station>
         loading={isLoading}
         hide={mapViewOpen}
