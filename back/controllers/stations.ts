@@ -232,6 +232,9 @@ router.get<{ id: string }, SingleStation, {}, SingleStationQuery>('/:id', async 
 });
 
 router.delete<{}, {}, number[]>('/', requireAuth, async (req, res) => {
+  await Journey.destroy({
+    where: { [Op.or]: [{ returnStationId: req.body }, { departureStationId: req.body }] }
+  });
   await Station.destroy({ where: { id: req.body } });
   res.json({});
 });
