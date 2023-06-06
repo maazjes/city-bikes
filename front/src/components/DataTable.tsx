@@ -25,6 +25,7 @@ interface DataTableBaseProps<T extends GridValidRowModel> {
   onSortModelChange?: (model: GridSortModel) => void;
   toolbarItemRight?: JSX.Element;
   onItemDelete: (selected: number[]) => Promise<void>;
+  loading?: boolean;
 }
 
 interface ServerModeProps<T extends GridValidRowModel> extends DataTableBaseProps<T> {
@@ -37,17 +38,12 @@ interface ClientModeProps<T extends GridValidRowModel> extends DataTableBaseProp
   data: T[];
 }
 
-const hideSlots = {
-  panel: (): null => null,
-  footer: (): null => null,
-  columnHeaders: (): null => null,
-  noResultsOverlay: (): null => null
-};
-
 const hideSX = {
   '& .MuiDataGrid-virtualScrollerContent': {
     height: '0px !important'
-  }
+  },
+  '& .MuiDataGrid-columnHeaders': { display: 'none' },
+  '& .MuiDataGrid-footerContainer': { display: 'none' }
 };
 
 const initialState = {
@@ -68,12 +64,14 @@ const DataTable = <T extends GridValidRowModel & { id: number }>({
   onFilterModelChange = undefined,
   data = undefined,
   toolbarItemRight = undefined,
-  onItemDelete
+  onItemDelete,
+  loading = undefined
 }: ServerModeProps<T> | ClientModeProps<T>): JSX.Element => {
   const [filterModel, setFilterModel] = useState<GridFilterModel>();
   const [sortModel, setSortModel] = useState<GridSortModel>([{ field: 'id', sort: 'asc' }]);
-  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>();
-  const [clientModeData, setClientModeData] = useState<T[]>(data || []);
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>(
+    initialState.pagination.paginationModel
+  );
   const [alertVisible, setAlertVisible] = useState(false);
   const { loggedIn } = useContext(LoggedInContext);
 
@@ -87,27 +85,13 @@ const DataTable = <T extends GridValidRowModel & { id: number }>({
   const [query, setQuery] = useState<PaginatedSortedFilteredQuery<T>>(initialQuery);
   const [selected, setSelected] = useState<number[]>([]);
 
-  const finalQueryKey = useMemo(() => [queryKey, query], [query]);
+  const finalQueryKey = [queryKey, query];
 
   const { data: serverModeData, isLoading } = useQuery(
     finalQueryKey,
     () => (getData ? getData(query) : undefined),
     {
       enabled: !!getData
-    }
-  );
-
-  const { mutate: deleteItems } = useMutation<unknown, unknown, number[]>(
-    `Delete ${queryKey}`,
-    (ids) => onItemDelete(ids),
-    {
-      onSuccess: () => {
-        if (getData) {
-          queryClient.refetchQueries(finalQueryKey);
-        } else {
-          setClientModeData([...clientModeData.filter((item) => !selected.includes(item.id))]);
-        }
-      }
     }
   );
 
@@ -158,8 +142,24 @@ const DataTable = <T extends GridValidRowModel & { id: number }>({
   };
 
   const rows = useMemo(
-    () => (serverModeData ? serverModeData.rows.flat(0) : !getData ? clientModeData : []),
-    [serverModeData, clientModeData]
+    () => (serverModeData ? serverModeData.rows.flat(0) : data || []),
+    [serverModeData, data]
+  );
+
+  const { mutate: deleteItems } = useMutation<unknown, unknown, number[]>(
+    `Delete ${queryKey}`,
+    (ids) => onItemDelete(ids),
+    {
+      onSuccess: () => {
+        if (getData) {
+          queryClient.refetchQueries(finalQueryKey);
+        } else {
+          queryClient.setQueryData(queryKey, () => [
+            ...rows.filter((item) => !selected.includes(item.id))
+          ]);
+        }
+      }
+    }
   );
 
   const serverModeProps: Partial<DataGridProps> = {
@@ -192,13 +192,9 @@ const DataTable = <T extends GridValidRowModel & { id: number }>({
         onDeleteIconClick={(): void => setAlertVisible(true)}
       />
       <DataGrid
+        loading={loading}
         autoHeight
-        slots={{
-          toolbar: GridFilterPanel,
-          loadingOverlay: () => null,
-          loadIcon: () => null,
-          ...(hide && hideSlots)
-        }}
+        slots={{ toolbar: GridFilterPanel }}
         filterModel={onFilterModelChange && filterModel}
         onFilterModelChange={onFilterModelChange && onFilterModelChanged}
         filterMode="client"
