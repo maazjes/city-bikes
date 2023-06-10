@@ -47,7 +47,7 @@ const columns: (Omit<GridColDef<Journey>, 'field'> & { field: keyof Journey })[]
   },
   {
     field: 'distance',
-    headerName: 'Distance',
+    headerName: 'Distance (m)',
     type: 'number',
     flex: 1,
     align: 'center',
@@ -55,7 +55,7 @@ const columns: (Omit<GridColDef<Journey>, 'field'> & { field: keyof Journey })[]
   },
   {
     field: 'duration',
-    headerName: 'Duration',
+    headerName: 'Duration (s)',
     type: 'number',
     flex: 1,
     align: 'center',
