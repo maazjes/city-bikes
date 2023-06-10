@@ -1,4 +1,5 @@
 import { AUTH_TOKEN } from './authToken';
+import { API_URL } from './config';
 
 const setAuthHeaders = (headers?: HeadersInit): HeadersInit | undefined => {
   if (!AUTH_TOKEN) {
@@ -28,7 +29,7 @@ const api = {
     uri: string,
     query?: { [key: string]: string | number | string[] | number[] | Date }
   ): Promise<TResponse> => {
-    let finalQuery = `http://localhost:8080/api/${uri}`;
+    let finalQuery = `${API_URL}${uri}`;
     if (query) {
       finalQuery += '?';
       Object.keys(query).forEach((key) => {
@@ -42,21 +43,21 @@ const api = {
   },
 
   post: <TResponse>(uri: string, body: object): Promise<TResponse> =>
-    request<TResponse>(`http://localhost:8080/api/${uri}`, {
+    request<TResponse>(`${API_URL}${uri}`, {
       method: 'POST',
       headers: setAuthHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify(body)
     }),
 
   postForm: <TResponse>(uri: string, body: FormData): Promise<TResponse> =>
-    request<TResponse>(`http://localhost:8080/api/${uri}`, {
+    request<TResponse>(`${API_URL}${uri}`, {
       method: 'POST',
       headers: setAuthHeaders(),
       body
     }),
 
   delete: <TResponse>(uri: string, body: number[]): Promise<TResponse> =>
-    request<TResponse>(`http://localhost:8080/api/${uri}`, {
+    request<TResponse>(`${API_URL}${uri}`, {
       method: 'DELETE',
       headers: setAuthHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify(body)

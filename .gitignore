@@ -20,6 +20,7 @@ back/front/
 .env.test.local
 .env.production.local
 .env
+.env.development
 back/uploads/
 
 npm-debug.log*
