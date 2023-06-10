@@ -1,10 +1,11 @@
 describe('Add stations view', () => {
   beforeEach(() => {
+    cy.request('http://localhost:8080/api/tests/start');
     cy.visit('http://localhost:3000/login');
     cy.get('#username').type('testtest', { force: true });
     cy.get('#password').type('testtest', { force: true });
     cy.get('#login-button').click({ force: true });
-    cy.request('http://localhost:8080/api/tests/start');
+    cy.wait(1000);
   });
 
   afterEach(() => {
