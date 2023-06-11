@@ -1,4 +1,5 @@
 if (process.env.NODE_ENV !== 'production') {
+  // eslint-disable-next-line import/no-extraneous-dependencies
   const dotenv = await import('dotenv');
   dotenv.config();
 }
